@@ -1,1 +1,1 @@
-# reiforcement-learning-book
+# reinforcement-learning-book
