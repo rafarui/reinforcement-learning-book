@@ -11,7 +11,10 @@ import itertools
 
 class tic_tac_toe(object):
     
+    
     def __init__(self):
+        
+        self.val_map = {'x': 1, 'o': 2}
         
         self.reset()
         
@@ -32,33 +35,27 @@ class tic_tac_toe(object):
         self.value_fun_o = np.ones(len(self.states)) * 0.5
 
         # construct a mask with all winning situations for X
-        x_wins = np.all(self.states[:, 0:3]==1, axis=1) | \
-                np.all(self.states[:, 3:6]==1, axis=1) | \
-                np.all(self.states[:, 6:9]==1, axis=1) | \
-                np.all(self.states[:, [0, 3, 6]]==1, axis=1) | \
-                np.all(self.states[:, [1, 4, 7]]==1, axis=1) | \
-                np.all(self.states[:, [2, 5, 8]]==1, axis=1) | \
-                np.all(self.states[:, [0, 4, 8]]==1, axis=1) | \
-                np.all(self.states[:, [2, 4, 6]]==1, axis=1)
+        x_wins = self.mask_wins('x')
 
         # construct a mask with all winning situations for O
-        o_wins = np.all(self.states[:, 0:3]==2, axis=1) | \
-                np.all(self.states[:, 3:6]==2, axis=1) | \
-                np.all(self.states[:, 6:9]==2, axis=1) | \
-                np.all(self.states[:, [0, 3, 6]]==2, axis=1) | \
-                np.all(self.states[:, [1, 4, 7]]==2, axis=1) | \
-                np.all(self.states[:, [2, 5, 8]]==2, axis=1) | \
-                np.all(self.states[:, [0, 4, 8]]==2, axis=1) | \
-                np.all(self.states[:, [2, 4, 6]]==2, axis=1)
-
-        # put a 1 in all winning positions and a 0 in all losing positions
-        self.value_fun_x[x_wins & ~o_wins] = 1
-        self.value_fun_o[x_wins & ~o_wins] = 0 
-
-        self.value_fun_x[o_wins & ~x_wins] = 0
-        self.value_fun_o[o_wins & ~x_wins] = 1
+        o_wins = self.mask_wins('o')
         
+        x_wins = x_wins & ~o_wins
+        o_wins = o_wins & ~x_wins
         
+        # construct a mask with all drawing situations for X and O
+        draws = np.all(self.states != 0, axis=1) & ~x_wins & ~o_wins
+
+        # for X, put a 1 in all winning positions 
+        # and a 0 in all losing and drawing positions
+        self.value_fun_x[x_wins] = 1
+        self.value_fun_x[o_wins | draws] = 0
+        
+        # do the same for O
+        self.value_fun_o[o_wins] = 1
+        self.value_fun_o[x_wins | draws] = 0 
+             
+    
     def play(self, num_games, eps=0.1, alpha=0.1, reset=False):
         
         if reset:
@@ -157,24 +154,53 @@ class tic_tac_toe(object):
                 board = np.reshape(next_state, (3, 3))
 
                 # check if game over
-                if ~np.any(board == 0):
+                if self.check_win(board, 'x'):
+                    wins_x += 1
+                    game_over = True
+                    
+                elif self.check_win(board, 'o'):
+                    wins_o += 1
+                    game_over = True
+                    
+                elif ~np.any(board == 0):
                     draws += 1
                     game_over = True
 
-                elif np.any(np.all(board == 1, axis=1)) | \
-                    np.any(np.all(board == 1, axis=0)) | \
-                    np.all(np.diag(board) == 1) | \
-                    np.all(np.diag(np.fliplr(board)) == 1):
-                    wins_x += 1
-                    game_over = True
-
-                elif np.any(np.all(board == 2, axis=1)) | \
-                    np.any(np.all(board == 2, axis=0)) | \
-                    np.all(np.diag(board) == 2) | \
-                    np.all(np.diag(np.fliplr(board)) == 2):
-                    wins_o += 1
-                    game_over = True
-
         return {"wins_x": wins_x, "wins_o": wins_o, "draws": draws}
+    
+    
+    def mask_wins(self, x_or_o):
+        
+        val = self.val_map[x_or_o]
+        
+        # construct a mask with all winning situations for given value
+        wins = np.all(self.states[:, 0:3]==val, axis=1) | \
+                np.all(self.states[:, 3:6]==val, axis=1) | \
+                np.all(self.states[:, 6:9]==val, axis=1) | \
+                np.all(self.states[:, [0, 3, 6]]==val, axis=1) | \
+                np.all(self.states[:, [1, 4, 7]]==val, axis=1) | \
+                np.all(self.states[:, [2, 5, 8]]==val, axis=1) | \
+                np.all(self.states[:, [0, 4, 8]]==val, axis=1) | \
+                np.all(self.states[:, [2, 4, 6]]==val, axis=1)
+                
+        return wins
+    
+    
+    def check_win(self, board, x_or_o):
+        
+        val = self.val_map[x_or_o]
+        
+        # check all possible winning positions
+        win = np.any(np.all(board == val, axis=1)) | \
+            np.any(np.all(board == val, axis=0)) | \
+            np.all(np.diag(board) == val) | \
+            np.all(np.diag(np.fliplr(board)) == val)
+                    
+        return win
+        
+    
+
+        
+        
         
         
