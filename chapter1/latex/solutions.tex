@@ -71,23 +71,24 @@ If the opponent did not take advantage of symmetries then her value function wou
 As the value of a state depends on the opponent's strategy, symmetrically equivalent states should only have the same value if the opponent's strategy is the same for those symmetrically equivalent states. This should be true for skilled human opponents, but when the reinforcement learning algorithm plays against itself there is no guarantee of this, especially in the earlier stages of learning.  
  
 
-
 \section{Exercise 1.3: Greedy Plan}
 
 \textbf{Suppose the reinforcement learning player was greedy, that is, it always played the move that brought it to the position that it rated the best. Might it learn to play better, or worse, than a nongreedy player? What problems might occur?}
 \\ \\
+It would likely play worse than a nongreedy player. To begin with, all non-terminal states have value 0.5, so the greedy player has to select moves randomly. She could get lucky and win from a bad board state, is which case the move would be reinforced and the player would be locked into that move whenever she encountered the possibility of moving into the same state again. Alternatively, the greedy player could be unlucky and lose from a good board state, in which case the state's value would be reduced and no other move which led to that state would ever be chosen again.
 
 
 \section{Exercise 1.4: Learning from Exploration}
 
 \textbf{Suppose learning updates occurred after all moves, including exploratory moves. If the step-size parameter is appropriately reduced over time (but not the tendency to explore), then the state values would converge to a different set of probabilities. What (conceptually) are the two sets of probabilities computed when we do, and when we do not, learn from exploratory moves? Assuming that we do continue to make exploratory moves, which set of probabilities might be better to learn? Which would result in more wins?}
 \\ \\
-
+When we do not learn from exploratory moves the value of each state converges to the true probability of winning from that state, assuming that we always move greedily. When we do learn from exploratory moves the value of each state converges to the true probability of winning from that state, assuming that with probability $1-\epsilon$ we move greedily and with probability $\epsilon$ we select randomly from the other moves.
 
 \section{Exercise 1.5: Other Improvements}
 
 \textbf{Can you think of other ways to improve the reinforcement learning player? Can you think of any better way to solve the tic-tac-toe problem as posed?}
 \\ \\
+Instead of backing-up the value of the next state to the previous state only, we could back-up the value to two or more time steps before, perhaps with some discount factor which gives less weight to states further back. In the extreme we could back-up the value to all previous states in the game. This should not change the final probabilities, but would increase the speed of learning.
 
 
 
