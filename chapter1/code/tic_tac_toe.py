@@ -72,6 +72,7 @@ class tic_tac_toe(object):
         draws = 0
         
         # for each game...
+        self.num_movs=np.zeros(num_games)
         for game in range(num_games):
             
             # initialise game variables
@@ -117,12 +118,11 @@ class tic_tac_toe(object):
                         0]
                 else:
                     # with probability 1-eps choose the best next state
-                    if np.isscalar(i_best) | (np.random.rand(1)[0] > eps):
-                        i_next = i_best
+                    i_next = i_best
 
-                        # backup value
-                        self.value_fun[turn][i_current] = self.value_fun[turn][i_current] + \
-                                                alpha * (self.value_fun[turn][i_next] - self.value_fun[turn][i_current])
+                    # backup value
+                    self.value_fun[turn][i_current] = self.value_fun[turn][i_current] + \
+                                            alpha * (self.value_fun[turn][i_next] - self.value_fun[turn][i_current])
 
                 if turn == 'x':
                     # change turn
@@ -134,6 +134,7 @@ class tic_tac_toe(object):
                 next_state = self.states[i_next].copy()
                 board = np.reshape(next_state, (3, 3))
 
+                self.num_movs[game] += 1
                 # check if game over
                 if self.check_win(board, 'x'):
                     wins_x += 1
@@ -186,4 +187,3 @@ class tic_tac_toe(object):
 if __name__=='__main__':
     ttc = tic_tac_toe()
     ttc.play(100)
-        
