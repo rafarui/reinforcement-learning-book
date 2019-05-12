@@ -82,7 +82,10 @@ It would likely play worse than a nongreedy player. To begin with, all non-termi
 
 \textbf{Suppose learning updates occurred after all moves, including exploratory moves. If the step-size parameter is appropriately reduced over time (but not the tendency to explore), then the state values would converge to a different set of probabilities. What (conceptually) are the two sets of probabilities computed when we do, and when we do not, learn from exploratory moves? Assuming that we do continue to make exploratory moves, which set of probabilities might be better to learn? Which would result in more wins?}
 \\ \\
-When we do not learn from exploratory moves the value of each state converges to the true probability of winning from that state, assuming that we always move greedily. When we do learn from exploratory moves the value of each state converges to the true probability of winning from that state, assuming that with probability $1-\epsilon$ we move greedily and with probability $\epsilon$ we select randomly from the other moves.
+When we do not learn from exploratory moves the value of each state converges to the true probability of winning from that state, assuming that after convergence we always move greedily. When we do learn from exploratory moves the value of each state converges to the true probability of winning from that state, assuming that after convergence we continue to make exploratory moves. For example, consider a board state with two empty spaces (and thus two possible moves) such that player X wins if he chooses one of the moves and loses if he chooses the other. When we do not learn form exploratory moves the value of this 
+
+
+Thus, assuming that we do continue to make exploratory moves, the latter set of probabilities would be better to learn and would result in more wins.
 
 \section{Exercise 1.5: Other Improvements}
 
