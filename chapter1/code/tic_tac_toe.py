@@ -117,12 +117,11 @@ class tic_tac_toe(object):
                         0]
                 else:
                     # with probability 1-eps choose the best next state
-                    if np.isscalar(i_best) | (np.random.rand(1)[0] > eps):
-                        i_next = i_best
+                    i_next = i_best
 
-                        # backup value
-                        self.value_fun[turn][i_current] = self.value_fun[turn][i_current] + \
-                                                alpha * (self.value_fun[turn][i_next] - self.value_fun[turn][i_current])
+                    # backup value
+                    self.value_fun[turn][i_current] = self.value_fun[turn][i_current] + \
+                                            alpha * (self.value_fun[turn][i_next] - self.value_fun[turn][i_current])
 
                 if turn == 'x':
                     # change turn
@@ -186,4 +185,3 @@ class tic_tac_toe(object):
 if __name__=='__main__':
     ttc = tic_tac_toe()
     ttc.play(100)
-        
