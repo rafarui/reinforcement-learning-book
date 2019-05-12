@@ -72,7 +72,6 @@ class tic_tac_toe(object):
         draws = 0
         
         # for each game...
-        self.num_movs=np.zeros(num_games)
         for game in range(num_games):
             
             # initialise game variables
@@ -134,7 +133,6 @@ class tic_tac_toe(object):
                 next_state = self.states[i_next].copy()
                 board = np.reshape(next_state, (3, 3))
 
-                self.num_movs[game] += 1
                 # check if game over
                 if self.check_win(board, 'x'):
                     wins_x += 1
