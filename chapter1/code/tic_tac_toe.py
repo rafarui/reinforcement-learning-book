@@ -53,7 +53,12 @@ class tic_tac_toe(object):
         
         # do the same for O
         self.value_fun_o[o_wins] = 1
-        self.value_fun_o[x_wins | draws] = 0 
+        self.value_fun_o[x_wins | draws] = 0
+
+        self.value_fun = {
+            'x':self.value_fun_x,
+            'o':self.value_fun_o
+        }
              
     
     def play(self, num_games, eps=0.1, alpha=0.1, reset=False):
@@ -93,61 +98,37 @@ class tic_tac_toe(object):
                 # of these, find states with one less taken position than current state
                 i_possible = i_possible[(self.states[i_possible] == 0).sum(axis=1) == (current_state == 0).sum() - 1]
 
-                if turn == 'x':
+
                     
-                    # of these, find states with one more X than current states
-                    i_possible = i_possible[(self.states[i_possible] == 1
-                                            ).sum(axis=1) == (current_state == 1).sum() + 1]
+                # of these, find states with one more X/O than current states
+                i_possible = i_possible[(self.states[i_possible] == self.val_map[turn]
+                                        ).sum(axis=1) == (current_state == self.val_map[turn]).sum() + 1]
 
-                    # get the state with the highest probability (break ties randomly)
-                    max_value = self.value_fun_x[i_possible].max()
-                    i_best = i_possible[self.value_fun_x[i_possible] == max_value]
-                    if ~np.isscalar(i_best):
-                        i_best = i_best[np.random.choice(len(i_best), 1)][0]
+                # get the state with the highest probability (break ties randomly)
+                max_value = self.value_fun[turn][i_possible].max()
+                i_best = i_possible[self.value_fun[turn][i_possible] == max_value]
+                if ~np.isscalar(i_best):
+                    i_best = i_best[np.random.choice(len(i_best), 1)][0]
 
-                    # with probability 1-eps choose the best next state
-                    if np.isscalar(i_best) | (np.random.rand(1)[0] > eps):
-                        i_next = i_best
-
-                        # backup value
-                        self.value_fun_x[i_current] = self.value_fun_x[i_current] + \
-                                                alpha * (self.value_fun_x[i_next] - self.value_fun_x[i_current])
-
-                    else:
-                        # choose one of the other states randomly
-                        i_possible = i_possible[i_possible != i_best]
-                        i_next = i_possible[np.random.choice(len(i_possible), 1)][0]
-
-                    # change turn
-                    turn = 'o'  
-
+                if (np.random.rand(1)[0] < eps) and ((current_state==0).sum()!=1):
+                    # choose one of the other states randomly
+                    i_possible = i_possible[i_possible != i_best]
+                    i_next = i_possible[np.random.choice(len(i_possible), 1)][
+                        0]
                 else:
-                    
-                    # of these, find states with one more O than current states
-                    i_possible = i_possible[(self.states[i_possible] == 2
-                                            ).sum(axis=1) == (current_state == 2).sum() + 1] 
-
-                    # get the state with the highest probability (break ties randomly)
-                    max_value = self.value_fun_o[i_possible].max()
-                    i_best = i_possible[self.value_fun_o[i_possible] == max_value]
-                    if ~np.isscalar(i_best):
-                        i_best = i_best[np.random.choice(len(i_best), 1)][0]
-
                     # with probability 1-eps choose the best next state
                     if np.isscalar(i_best) | (np.random.rand(1)[0] > eps):
                         i_next = i_best
 
                         # backup value
-                        self.value_fun_o[i_current] = self.value_fun_o[i_current] + \
-                                                alpha * (self.value_fun_o[i_next] - self.value_fun_o[i_current])
+                        self.value_fun[turn][i_current] = self.value_fun[turn][i_current] + \
+                                                alpha * (self.value_fun[turn][i_next] - self.value_fun[turn][i_current])
 
-                    else:
-                        # choose one of the other states randomly
-                        i_possible = i_possible[i_possible != i_best]
-                        i_next = i_possible[np.random.choice(len(i_possible), 1)] 
-
+                if turn == 'x':
                     # change turn
-                    turn = 'x' 
+                    turn = 'o'
+                else:
+                    turn = 'x'
 
                 # add new move to board
                 next_state = self.states[i_next].copy()
@@ -202,5 +183,7 @@ class tic_tac_toe(object):
 
         
         
-        
+if __name__=='__main__':
+    ttc = tic_tac_toe()
+    ttc.play(100)
         
