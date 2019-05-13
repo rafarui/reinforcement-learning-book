@@ -57,8 +57,19 @@
 
 \textbf{Suppose, instead of playing against a random opponent, the reinforcement learning algorithm described above played against itself, with both sides learning. What do you think would happen in this case? Would it learn a different policy for selecting moves?}
 \\ \\
-Suppose that player X discovers a good board state, such as one with two Xs on the top row. Then she will start to make moves that get her into this state more often. But player O will also experience this state more often and learn that it is bad for her, and thus begin to make moves which help her avoid this state. Player X would then have to adapt and find more elaborate ways to arrive at the winning board states. The exact same learning process would occur for player O and both players would gradually become more and more intelligent at the same rate. In the long run they would both learn very similar value functions, that is, the value of a state for player X should be the same as the value of the opposite state for player O, where opposite means switching the Xs and Os. 
-
+As there is no reward for drawing, when the reinforcement learning algorithm plays against itself each side will learn a policy which attempts to win at all costs without trying to block moves which lead to wins for its opponent. When the reinforcement learning algorithm plays against a human the algorithm again has no incentive to block moves which would lead to wins for the human, however, a human is likely to have the foresight to at least block the most obvious of moves which would lead to wins for the algorithm. 
+\\ \\
+For example, when the algorithm plays against itself, after a substantial period of learning it would not be unlikely for a game to proceed as follows: 
+\begin{enumerate}
+	\item X in 1st row, 1st column
+	\item O in 3rd row, 1st column
+	\item X in 1st row 2nd column
+	\item O in 3rd row, 2nd column
+	\item X in 1st row, 3rd column (X wins)	
+\end{enumerate}
+Here the second player is trying to win by putting three Os on the bottom row with no consideration for blocking the three Xs on the top row. When the algorithm plays against a human, and assuming that the algorithm is playing Xs, this game should never occur because any human with an ounce of sense would block the top row before the algorithm could lay down three Xs. Thus, when playing against a human such a simplistic policy would never be reinforced and the algorithm would be forced to find policies with more foresight. 
+\\ \\
+In fact, we implemented the code for the reinforcement learning algorithm playing against itself and after a significant period of learning almost half the games finished in only five moves (three for the first player, two for the second), which is the minimum possible. Therefore, the algorithm learned very short-sighted policies which only work when it has the first move. A human who knows the rules of the game would never allow the algorithm to win after only five moves and it would have to learn more sophisticated policies to maximise reward.
 
 \section{Exercise 1.2: Symmetries}
 
@@ -82,10 +93,11 @@ It would likely play worse than a nongreedy player. To begin with, all non-termi
 
 \textbf{Suppose learning updates occurred after all moves, including exploratory moves. If the step-size parameter is appropriately reduced over time (but not the tendency to explore), then the state values would converge to a different set of probabilities. What (conceptually) are the two sets of probabilities computed when we do, and when we do not, learn from exploratory moves? Assuming that we do continue to make exploratory moves, which set of probabilities might be better to learn? Which would result in more wins?}
 \\ \\
-When we do not learn from exploratory moves the value of each state converges to the true probability of winning from that state, assuming that after convergence we always move greedily. When we do learn from exploratory moves the value of each state converges to the true probability of winning from that state, assuming that after convergence we continue to make exploratory moves. For example, consider a board state with two empty spaces (and thus two possible moves) such that player X wins if he chooses one of the moves and loses if he chooses the other. When we do not learn form exploratory moves the value of this 
-
-
-Thus, assuming that we do continue to make exploratory moves, the latter set of probabilities would be better to learn and would result in more wins.
+When we do not learn from exploratory moves the value of each state converges to the true probability of winning from that state, assuming that after convergence we always move greedily. When we do learn from exploratory moves the value of each state converges to the true probability of winning from that state, assuming that after convergence we continue to make exploratory moves.
+\\ \\
+For example, consider a board state with two empty spaces (and thus two possible moves) such that player X wins if he chooses one of the moves and draws if he chooses the other. As player X can always win from this state, if she only learns from greedy moves then the value of this state will converge to 1. However, if she also learns from exploratory moves, and assuming that the probability of choosing an exploratory move is $\epsilon$, then the value of this state will converge to $1 \cdot (1-\epsilon) + 0 \cdot \epsilon = 1-\epsilon$.
+\\ \\
+Assuming that we do continue to make exploratory moves, the probabilities which are learned from both greedy and exploratory moves will converge slightly faster due to learning on every time step. These probabilities would also lead to more wins because, as discussed above, they are the true probabilities of winning when making exploratory moves, and we are assuming that this is the case even after convergence. 
 
 \section{Exercise 1.5: Other Improvements}
 
