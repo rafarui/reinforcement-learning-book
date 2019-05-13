@@ -77,7 +77,7 @@ In fact, we implemented the code for the reinforcement learning algorithm playin
 \\ \\
 Instead of learning the value function for all board states we could learn the value function only for unique states after removing symmetries. So, for example, the state with an X in the top left corner and a O in the bottom right corner would have the same value as the state with a O in the top left corner and an X in the bottom right corner. This would significantly reduce the number of states, meaning that each state would be visited more often and the value function would converge in less time steps (assuming that the step-size parameter is reduced properly over time).  
 \\ \\
-If the opponent did not take advantage of symmetries then her value function would take longer to converge. This may actually be beneficial due to increased exploration. Suppose that player X, who is taking advantage of symmetries, got lucky and won from a bad board state during one of the early games. Then this state would be reinforced along with all symmetrical state, making it even more likely to be experienced again. As player O is not taking advantage of symmetries and learning more slowly, player X may get lucky several more times and continue to reinforce the bad state. Player O could also learn different strategies from symmetrically equivalent states, whereas player X would be stuck with the same strategy for all equivalent states, irrespective of the opponent's strategy. This could lead to a sub-optimal policy for player X. 
+If the opponent did not take advantage of symmetries then her value function would take longer to converge. This may actually be beneficial due to increased exploration. Suppose that player X, who is taking advantage of symmetries, got lucky and won from a bad board state during one of the early games. Then this state would be reinforced along with all symmetrical states, making it even more likely for one of the equivalent states to be experienced again. As player O is not taking advantage of symmetries and learning more slowly, player X may get lucky several more times and continue to reinforce the bad state. Moreover, Player O could learn different strategies for symmetrically equivalent states whereas player X would be stuck with the same strategy for all equivalent states, irrespective of the opponent's strategy. This could lead to a sub-optimal policy for player X. 
 \\ \\
 As the value of a state depends on the opponent's strategy, symmetrically equivalent states should only have the same value if the opponent's strategy is the same for those symmetrically equivalent states. This should be true for skilled human opponents, but when the reinforcement learning algorithm plays against itself there is no guarantee of this, especially in the earlier stages of learning.  
  
@@ -97,14 +97,21 @@ When we do not learn from exploratory moves the value of each state converges to
 \\ \\
 For example, consider a board state with two empty spaces (and thus two possible moves) such that player X wins if he chooses one of the moves and draws if he chooses the other. As player X can always win from this state, if she only learns from greedy moves then the value of this state will converge to 1. However, if she also learns from exploratory moves, and assuming that the probability of choosing an exploratory move is $\epsilon$, then the value of this state will converge to $1 \cdot (1-\epsilon) + 0 \cdot \epsilon = 1-\epsilon$.
 \\ \\
-Assuming that we do continue to make exploratory moves, the probabilities which are learned from both greedy and exploratory moves will converge slightly faster due to learning on every time step. These probabilities would also lead to more wins because, as discussed above, they are the true probabilities of winning when making exploratory moves, and we are assuming that this is the case even after convergence. 
+Assuming that we do continue to make exploratory moves, the probabilities which are learned from both greedy and exploratory moves would be better to learn and lead to more wins because, as discussed above, they are the true probabilities of winning when making exploratory moves and as such they define the optimal policy for this scenario.
 
 \section{Exercise 1.5: Other Improvements}
 
 \textbf{Can you think of other ways to improve the reinforcement learning player? Can you think of any better way to solve the tic-tac-toe problem as posed?}
 \\ \\
-Instead of backing-up the value of the next state to the previous state only, we could back-up the value to two or more time steps before, perhaps with some discount factor which gives less weight to states further back. In the extreme we could back-up the value to all previous states in the game. This should not change the final probabilities, but would increase the speed of learning.
-
+Instead of backing-up the value of the next state to the previous state only, we could back-up the value to two or more time steps before, perhaps with some discount factor which gives less weight to states further back. In the extreme we could back-up the value to all previous states in the game. 
+\\ \\
+As well as reducing the step-size parameter over time we could also reduce the probability with which we make exploratory moves. For example, we could start with a fairly high probability such as 0.5 and gradually reduce it to 0.01.
+\\ \\
+As discussed in the solution to Exercise 1.1, setting the value of draws to 0, the losses, leads to the reinforcement learning algorithm learning very short-sighted policies when it plays against itself. We believe that setting the value of draws to 0.5 would force the algorithm to learn more sophisticated policies which would lead to more wins against a human opponent.
+\\ \\
+To speed up learning the algorithm could play $n$ games in parallel. Once all $n$ games terminated the $n$ different value functions would be averaged and this mean value function would be used as the initial value function in the next round of $n$ games.
+\\ \\
+Alternatively, we could try to solve the problem using a search tree or a meta-heuristic such as a genetic algorithm or particle swarm optimisation, but we do not believe that these methods would perform better that the reinforcement learning algorithm, which is able to converge to an optimal policy.
 
 
 \end{document}
