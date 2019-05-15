@@ -89,4 +89,24 @@ On each time step the probability of selecting the best action is $1-\epsilon$ t
 On the first time step all actions have value 0 and we select an action $A_1$ at random and receive a reward $R_1$. Suppose that $R_1 < 0$. What is the probability that $A_1$ is the best action? 
 
 
+\section{Exercise 2.4}
+
+\textbf{If the step-size parameters, $\alpha_n$, are not constant, then the estimate $Q_n$ is a weighted average of previously received rewards with weighting different from that given by (2.6). What is the weighting on each prior reward for the general case, analogous to (2.6), in terms of the sequence of step-size parameters?}
+\\ \\ 
+We have
+\begin{align*}
+	Q_{n+1} & = Q_n + \alpha_n[R_n - Q_n] \\
+			& = \alpha_n R_n + (1-\alpha_n) Q_n \\
+			& = \alpha_n R_n + (1-\alpha_n)[\alpha_{n-1} R_{n-1} + (1-\alpha_{n-1}) Q_{n-1}] \\
+			& = \alpha_n R_n + (1-\alpha_n)\alpha_{n-1}R_{n-1} + (1-\alpha_n)(1-\alpha_{n-1})Q_{n-1} \\
+			& = \alpha_n R_n + (1-\alpha_n)\alpha_{n-1}R_{n-1} + \quad \dots + (1-\alpha_n)(1-\alpha_{n-1})\dots (1-\alpha_2)\alpha_1 R_1 + \\
+			& \quad \quad (1-\alpha_n)(1-\alpha_{n-1})\dots (1-\alpha_2)(1-\alpha_1) Q_1 \\
+			& = Q_1\prod_{j=1}^{n}(1-\alpha_j) + \alpha_n R_n + \sum_{i=1}^{n-1}\alpha_i R_i \prod_{j=i+1}^{n}(1-\alpha_j).
+\end{align*}
+Therefore, the weighting on $R_n$ is $\alpha_n$ and the weighting on $R_i$ for $i=1,\dots,n-1$ is $\alpha_i \prod_{j=i+1}^{n}(1-\alpha_j)$. Note that when $\alpha_i = \alpha$ for all $i$ the expression above reduces to
+\[
+	(1-\alpha)^n Q_1 + \alpha R_n + \sum_{i=1}^{n-1}\alpha(1-\alpha)^{n-i}R_i = (1-\alpha)^n Q_1 + \sum_{i=1}^{n}\alpha(1-\alpha)^{n-i}R_i,
+\]
+which is exactly (2.6).
+
 \end{document}
