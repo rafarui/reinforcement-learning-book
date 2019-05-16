@@ -109,4 +109,26 @@ Therefore, the weighting on $R_n$ is $\alpha_n$ and the weighting on $R_i$ for $
 \]
 which is exactly (2.6).
 
+
+\section{Exercise 2.5}
+
+\textbf{Design and conduct an experiment to demonstrate the difficulties that sample-average methods have for nonstationary problems. Use a modified version of the 10-armed testbed in which all the $q_*(a)$ start out equal and then take independent random walks (say by adding a normally distributed increment with mean zero and standard deviation 0.01 to all the $q_*(a)$ on each step). Prepare plots like Figure 2.2 for an action-value method using sample averages, incrementally computed, and another action-value method using a constant step-size parameter, $\alpha = 0.1$. Use $\epsilon = 0.1$ and longer runs, say of 10,000 steps.}
+\\ \\ 
+As we can see from Figure \ref{fig:KArmedBanditNonStationarySampleAveraging}, the sample averaging method chooses the optimal action less than 50\% of the time, even after 10,000 time steps. Using a constant step-size of 0.1 works better, as shown in Figure \ref{fig:KArmedBanditNonStationaryConstantStep} where the optimal action is chosen around 75\% of the time after 10,000 time steps.  The sample averaging method does not work as well because after a significant number of time steps the step-size of $1/n$ becomes very small and the action-value estimates cannot adapt to the non-stationary environment.
+
+
+\begin{figure}
+	\centering
+	\caption{Average performance of non-stationary $K$-armed bandit with sample averaging.}
+	\includegraphics[scale=0.5]{ex2_5_1}
+	\label{fig:KArmedBanditNonStationarySampleAveraging}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\caption{Average performance of non-stationary $K$-armed bandit with constant step-size $\alpha=0.1$.}
+	\includegraphics[scale=0.5]{ex2_5_2}
+	\label{fig:KArmedBanditNonStationaryConstantStep}
+\end{figure}
+
 \end{document}
