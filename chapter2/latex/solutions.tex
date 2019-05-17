@@ -131,4 +131,17 @@ As we can see from Figure \ref{fig:KArmedBanditNonStationarySampleAveraging}, th
 	\label{fig:KArmedBanditNonStationaryConstantStep}
 \end{figure}
 
+
+\section{Exercise 2.6: Mysterious Spikes}
+
+\textbf{The results shown in Figure 2.3 should be quite reliable because they are averages over 2000 individual, randomly chosen 10-armed bandit tasks. Why, then, are there oscillations and spikes in the early part of the curve for the optimistic method? In other words, what might make this method perform particularly better or worse, on average, on particular early steps?}
+\\ \\ 
+On the 1st time step all arms have an estimated value of 5 and the optimistic method has to choose an action at random. As the $q_*(a)$ are selected from a normal distribution with mean 0 and variance 1, it is extremely unlikely that the reward will be greater than or equal to 5. Therefore, the estimated value of the chosen action will decrease and on the 2nd time step the algorithm will choose randomly between the remaining 9 actions. Again the reward will be less than 5 and the estimated value of this action will decrease and on the 3rd time step the algorithm will choose randomly between the remaining 8 actions. This will continue for the first ten time steps until all ten actions have been selected and their estimated values reduced. Thus, as the selection during the first ten steps is completely random, on each of these steps the optimal value is chosen 10\% of the time on average, as show in the graph.
+\\ \\
+Now on the 11th time step the action whose value was reduced the least, that is, the action which obtained the greatest reward during the first ten steps, will be selected. Over many runs the optimal action will return the highest reward and will therefore be selected most frequently on the 11th step. From the plot it looks like the first large spike occurs on the 11th step, where the optimal action is selected in just over 40\% of the runs. 
+\\ \\
+If the optimal action is selected on the 11th step then its estimated value will be reduced further such that it will not realistically be chosen again until after all other actions have also been sampled and had their estimated values reduced. Thus the next realistic opportunity for the optimal action to be selected will be on the 21st step, where there appears to be another spike in the graph up to just under 20\%. If on the other hand the optimal action is not selected on the 11th step then it is the most likely of the remaining nine actions to be selected on the 12th step, and so on. 
+\\ \\
+After thirty steps each action will likely have been chosen three times and the estimated values will have been reduced such that they are much closer to the true values. As a result, from this point on the spikes in the graph are noticeably smaller.  
+
 \end{document}
