@@ -210,4 +210,24 @@ Q_{12}(a) + 2\sqrt{\frac{\ln 12}{1}} \approx Q_{12}(a) + 3.15.
 Hence, it is extremely unlikely that the action which was chosen on the 11th step will be chosen again on the 12th step, and since the frequency at which an action is chosen on the 11th step is directly proportional to its true value, these same actions will be chosen less on the 12th step, which explains why there is an immediate drop in the average reward.
 
 
+\section{Exercise 2.9}
+
+\textbf{Show that in the case of two actions, the soft-max distribution is the same as that given by the logistic, or sigmoid, function often used in statistics and artificial neural networks.}
+\\ \\
+Suppose that we have two actions $a$ and $b$. Then
+\begin{align*}
+	\Pr\{A_t = a\} & = \frac{e^{H_t(a)}}{e^{H_t(a)} + e^{H_t(b)}} \\
+				   & = \frac{1}{1 + e^{H_t(b) - H_t(a)}} \\
+				   & = \frac{1}{1 + e^{-(H_t(a) - H_t(b))}},
+\end{align*}
+and similarly 
+\[
+	\Pr\{A_t = b\} = \frac{1}{1 + e^{-(H_t(b) - H_t(a))}}.
+\]
+Define $G_t(a, b) = H_t(a) - H_t(b)$. Then 
+\[
+	\Pr\{A_t = a\} = \frac{1}{1 + e^{-G_t(a, b)}} = 1 - \frac{1}{1 + e^{G_t(a, b)}}  = 1 - \Pr\{A_t = b\},   
+\]
+which is the distribution defined by the sigmoid function.
+
 \end{document}
