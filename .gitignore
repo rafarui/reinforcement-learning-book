@@ -110,3 +110,8 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+chapter1/latex/solutions.bbl
+chapter1/latex/solutions.blg
+chapter1/latex/solutions.synctex(busy)
+chapter1/latex/solutions.tcp
+chapter1/latex/solutions.tps
