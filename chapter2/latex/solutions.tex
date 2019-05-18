@@ -144,4 +144,58 @@ If the optimal action is selected on the 11th step then its estimated value will
 \\ \\
 After thirty steps each action will likely have been chosen three times and the estimated values will have been reduced such that they are much closer to the true values. As a result, from this point on the spikes in the graph are noticeably smaller.  
 
+
+\section{Exercise 2.7: Unbiased Constant-Step-Size Trick}
+
+\textbf{In most of this chapter we have used sample averages to estimate action values because sample averages do not produce the initial bias that constant step sizes do (see the analysis leading to (2.6)). However, sample averages are not a completely satisfactory solution because they may perform poorly on nonstationary problems. Is it possible to avoid the bias of constant step sizes while retaining their advantages on nonstationary problems? One way is to use a step size of
+\[
+	\beta_n \doteq \alpha /  \bar{o}_n,
+\]
+to process the $n$th reward for a particular action, where $\alpha > 0$ is a conventional constant step size, and $\bar{o}_n$ is a trace of one that starts at 0:
+\[
+	\bar{o}_n \doteq \bar{o}_{n-1} + \alpha(1-\bar{o}_{n-1}), 	
+\]
+for $n\geq 0$ with $\bar{o}_0 \doteq 0$. Carry out an analysis like that in (2.6) to show that $Q_n$ is an exponential recency-weighted average \emph{without initial bias}.}
+\\ \\ 
+We have
+\begin{align*}
+	Q_{n+1} & = Q_n + \beta_n[R_n - Q_n] \\
+	& = \beta_n R_n + (1-\beta_n) Q_n \\
+	& = \beta_n R_n + (1-\beta_n)[\beta_{n-1} R_{n-1} + (1-\beta_{n-1}) Q_{n-1}] \\
+	& = \beta_n R_n + (1-\beta_n)\beta_{n-1}R_{n-1} + (1-\beta_n)(1-\beta_{n-1})Q_{n-1} \\
+	& = \frac{\alpha}{\bar{o}_n} R_n + \left(1-\frac{\alpha}{\bar{o}_n}\right)\frac{\alpha}{\bar{o}_{n-1}}R_{n-1} + \left(1-\frac{\alpha}{\bar{o}_n}\right)\left(1-\frac{\alpha}{\bar{o}_{n-1}}\right)Q_{n-1} \\
+	& = \frac{\alpha}{\bar{o}_n} R_n + \left(\frac{\bar{o}_n - \alpha}{\bar{o}_n}\right)\frac{\alpha}{\bar{o}_{n-1}}R_{n-1} + \left(\frac{\bar{o}_n - \alpha}{\bar{o}_n}\right)\left(\frac{\bar{o}_{n-1} - \alpha}{\bar{o}_{n-1}}\right)Q_{n-1} \\
+	& = \frac{\alpha}{\bar{o}_n} R_n + \left(\frac{\bar{o}_{n-1} + \alpha(1-\bar{o}_{n-1}) - \alpha}{\bar{o}_n}\right)\frac{\alpha}{\bar{o}_{n-1}}R_{n-1} + \left(\frac{\bar{o}_{n-1} + \alpha(1-\bar{o}_{n-1}) - \alpha}{\bar{o}_n}\right)\left(\frac{\bar{o}_{n-1} - \alpha}{\bar{o}_{n-1}}\right)Q_{n-1} \\
+	& = \frac{\alpha}{\bar{o}_n} R_n + \left(\frac{\bar{o}_{n-1}(1 - \alpha)}{\bar{o}_n}\right)\frac{\alpha}{\bar{o}_{n-1}}R_{n-1} + \left(\frac{\bar{o}_{n-1}(1 - \alpha)}{\bar{o}_n}\right)\left(\frac{\bar{o}_{n-1} - \alpha}{\bar{o}_{n-1}}\right)Q_{n-1} \\	
+	& = \frac{\alpha}{\bar{o}_n} R_n + \frac{(1-\alpha)\alpha}{\bar{o}_n} R_{n-1} + \frac{(1-\alpha)(\bar{o}_{n-1} - \alpha)}{\bar{o}_n}	Q_{n-1}.		
+\end{align*}
+Now 
+\begin{align*}
+	(\bar{o}_{n-1} - \alpha) Q_{n-1} & = (\bar{o}_{n-1} - \alpha) [\beta_{n-2} R_{n-2} + (1-\beta_{n-2}) Q_{n-2}] \\
+	& = (\bar{o}_{n-1} - \alpha)\beta_{n-2} R_{n-2} + (\bar{o}_{n-1} - \alpha) (1-\beta_{n-2}) Q_{n-2}	\\
+	& = (\bar{o}_{n-1} - \alpha)\frac{\alpha}{\bar{o}_{n-2}} R_{n-2} + (\bar{o}_{n-1} - \alpha)	\left(1-\frac{\alpha}{\bar{o}_{n-2}}\right) Q_{n-2} \\
+	& = (\bar{o}_{n-2} + \alpha(1 - \bar{o}_{n-2}) - \alpha)\frac{\alpha}{\bar{o}_{n-2}} R_{n-2} + (\bar{o}_{n-2} + \alpha(1 - \bar{o}_{n-2}) - \alpha)	\left(1-\frac{\alpha}{\bar{o}_{n-2}}\right) Q_{n-2} \\
+	& = \bar{o}_{n-2}(1 - \alpha)\frac{\alpha}{\bar{o}_{n-2}} R_{n-2} + \bar{o}_{n-2}(1 - \alpha) \left(\frac{\bar{o}_{n-2} - \alpha}{\bar{o}_{n-2}}\right) Q_{n-2} \\
+	& = (1 - \alpha)\alpha R_{n-2} + (1 - \alpha)(\bar{o}_{n-2} - \alpha)  Q_{n-2} \\
+\end{align*}
+Hence
+\begin{align*}
+	Q_{n+1} & = \frac{\alpha}{\bar{o}_n} R_n + \frac{(1-\alpha)\alpha}{\bar{o}_n} R_{n-1} + \frac{(1-\alpha)}{\bar{o}_n}[(1 - \alpha)\alpha R_{n-2} + (1 - \alpha)(\bar{o}_{n-2} - \alpha)  Q_{n-2}] \\
+	& =  \frac{\alpha}{\bar{o}_n} R_n + \frac{(1-\alpha)\alpha}{\bar{o}_n} R_{n-1} + \frac{(1-\alpha)^2\alpha}{\bar{o}_n} R_{n-2} + \frac{(1-\alpha)^2(\bar{o}_{n-2} - \alpha)}{\bar{o}_n}	Q_{n-2} \\
+	& = \frac{\alpha}{\bar{o}_n} R_n + \frac{(1-\alpha)\alpha}{\bar{o}_n} R_{n-1} + \frac{(1-\alpha)^2\alpha}{\bar{o}_n} R_{n-2} + \dots + \frac{(1-\alpha)^{n-1}\alpha}{\bar{o}_n} R_1 + \frac{(1-\alpha)^{n-1}(\bar{o}_1 - \alpha)}{\bar{o}_n}Q_1 \\
+	& = \frac{(1-\alpha)^{n-1}(\bar{o}_1 - \alpha)}{\bar{o}_n}Q_1 + \frac{\alpha}{\bar{o}_n} \sum_{i=1}^{n} (1-\alpha)^{n-i} R_i \\
+	& = \frac{(1-\alpha)^{n-1}(\bar{o}_0 + \alpha(1 - \bar{o}_0) - \alpha)}{\bar{o}_n}Q_1 + \frac{\alpha}{\bar{o}_n} \sum_{i=1}^{n} (1-\alpha)^{n-i} R_i \\
+	& = \frac{(1-\alpha)^{n-1}(\alpha - \alpha)}{\bar{o}_n}Q_1 + \frac{\alpha}{\bar{o}_n} \sum_{i=1}^{n} (1-\alpha)^{n-i} R_i \\
+	& = \frac{\alpha}{\bar{o}_n} \sum_{i=1}^{n} (1-\alpha)^{n-i} R_i.
+\end{align*}
+This shows that $Q_n$ is an exponential recency-weighted average where the weight given to $R_i$ decays exponentially according to the exponent on $1-\alpha$. Also, as the average does not depend on $Q_1$ it has no initial bias.
+
+
+%\begin{align*}	
+%	Q_{n+1} & = Q_1\prod_{j=1}^{n}(1-\beta_j) + \beta_n R_n + \sum_{i=1}^{n-1}\beta_i R_i \prod_{j=i+1}^{n}(1-\beta_j) \\
+%			& = Q_1\prod_{j=1}^{n}(1-\frac{\alpha}{\bar{o}_j}) + \frac{\alpha}{\bar{o}_n} R_n + \sum_{i=1}^{n-1}\frac{\alpha}{\bar{o}_i} R_i \prod_{j=i+1}^{n}(1-\frac{\alpha}{\bar{o}_j}) \\
+%			& = Q_1\prod_{j=1}^{n}(1-\frac{\alpha}{\bar{o}_j}) + \frac{\alpha}{\bar{o}_n} R_n + \sum_{i=1}^{n-1}\frac{\alpha}{\bar{o}_i} R_i \prod_{j=i+1}^{n}(1-\frac{\alpha}{\bar{o}_j})
+%\end{align*}
+
+
 \end{document}
