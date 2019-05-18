@@ -6,6 +6,13 @@ __pycache__/
 images/
 # C extensions
 *.so
+.bbl
+.blg
+.out
+.synctex*
+.tcp
+.tps
+.aux
 
 # Distribution / packaging
 .Python
