@@ -94,9 +94,13 @@ where  $r_{mean}$ is the mean reward and  $r_{max}$ is the maximum reward.
 
 Let's assume that $r_{mean}=0$ (can we assume 0 for a completely random k-armed bandit or use 1 for the suboptimal greedy case????) and $r_{max} =1.5$ (it seems the asymptotic value for $\epsilon$ and also the greater mean value in the Fig 2.1.,  Then, we have 
 $$
-0.9*1.5 + 0.1 *0 = 1.35 \text{ or } 0.99*1.5 + 0.01*0 = 1.485
+0.9*1.5 + 0.1 *0 = 1.35 
 $$
-for $\epsilon=0.1$ and $\epsilon=0.01$ respectively.   
+for $\epsilon=0.1$ and 
+$$
+0.99*1.5 + 0.01*0 = 1.485
+$$
+for $\epsilon=0.01$   
 
 
 
@@ -112,11 +116,12 @@ We have
 			& = \alpha_n R_n + (1-\alpha_n)\alpha_{n-1}R_{n-1} + (1-\alpha_n)(1-\alpha_{n-1})Q_{n-1} \\
 			& = \alpha_n R_n + (1-\alpha_n)\alpha_{n-1}R_{n-1} + \quad \dots + (1-\alpha_n)(1-\alpha_{n-1})\dots (1-\alpha_2)\alpha_1 R_1 + \\
 			& \quad \quad (1-\alpha_n)(1-\alpha_{n-1})\dots (1-\alpha_2)(1-\alpha_1) Q_1 \\
-			& = Q_1\prod_{j=1}^{n}(1-\alpha_j) + \alpha_n R_n + \sum_{i=1}^{n-1}\alpha_i R_i \prod_{j=i+1}^{n}(1-\alpha_j).
+			& = Q_1\prod_{j=1}^{n}(1-\alpha_j) + \alpha_n R_n + \sum_{i=1}^{n-1}\alpha_i R_i \prod_{j=i+1}^{n}(1-\alpha_j)\\
+			& = Q_1\prod_{j=1}^{n}(1-\alpha_j) + \sum_{i=1}^{n}\alpha_i R_i \prod_{j=i}^{n-1}(1-\alpha_{j+1}).
 \end{align*}
 Therefore, the weighting on $R_n$ is $\alpha_n$ and the weighting on $R_i$ for $i=1,\dots,n-1$ is $\alpha_i \prod_{j=i+1}^{n}(1-\alpha_j)$. Note that when $\alpha_i = \alpha$ for all $i$ the expression above reduces to
 \[
-	(1-\alpha)^n Q_1 + \alpha R_n + \sum_{i=1}^{n-1}\alpha(1-\alpha)^{n-i}R_i = (1-\alpha)^n Q_1 + \sum_{i=1}^{n}\alpha(1-\alpha)^{n-i}R_i,
+	(1-\alpha)^n Q_1 +  \sum_{i=1}^{n-1}\alpha(1-\alpha)^{n-i}R_i = (1-\alpha)^n Q_1 + \sum_{i=1}^{n}\alpha(1-\alpha)^{n-i}R_i,
 \]
 which is exactly (2.6).
 
