@@ -85,10 +85,19 @@ Therefore, the $\epsilon$ case definitely occurred on time steps 2 and 5. As it 
 \section{Exercise 2.3}
 
 \textbf{In the comparison shown in Figure 2.2, which method will perform best in the long run in terms of cumulative reward and probability of selecting the best action? How much better will it be? Express your answer quantitatively.}
-\\ \\ 
-On each time step the probability of selecting the best action is $1-\epsilon$ times the probability that the greedy action is the best action, plus $\epsilon$ times the probability that the best action is chosen randomly. Clearly the probability that the best action is chosen randomly is $1/k$, thus we just need to work out the probability that the greedy action is the best action. 
-\\ \\ 
-On the first time step all actions have value 0 and we select an action $A_1$ at random and receive a reward $R_1$. Suppose that $R_1 < 0$. What is the probability that $A_1$ is the best action? 
+\\ \\
+
+The $\epsilon=0.01$ case will perform better in the long run. It is guaranteed we will find the optimal action and then exploit it in the long run. Thus, it will exploit the best action  $99\%$ of the time, while the $\epsilon=0.1$  will exploit the optimal action only $90\%$ of the time.
+Quantitatively, in the long run the $\epsilon$-greedy strategy will take the wrong action in $1 - \epsilon$. We can compute the asymptotic reward as
+ $$(1 - \epsilon) r_{max} + \epsilon r_{mean},$$
+where  $r_{mean}$ is the mean reward and  $r_{max}$ is the maximum reward. 
+
+Let's assume that $r_{mean}=0$ (can we assume 0 for a completely random k-armed bandit or use 1 for the suboptimal greedy case????) and $r_{max} =1.5$ (it seems the asymptotic value for $\epsilon$ and also the greater mean value in the Fig 2.1.,  Then, we have 
+$$
+0.9*1.5 + 0.1 *0 = 1.215 \text{ or } 0.99*1.5 + 0.01*0 = 1.485
+$$
+for $\epsilon=0.1$ and $\epsilon=0.01$ respectively.   
+
 
 
 \section{Exercise 2.4}
