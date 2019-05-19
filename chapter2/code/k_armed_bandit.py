@@ -129,7 +129,7 @@ class KArmedBandit:
             return np.random.choice(self.arms, p=self.gradient_action_prob)
         if self.use_UBC:
             ubc_estimate = self.q_estimate + \
-                             self.UCB_param * np.sqrt(
+                             self.UBC_param * np.sqrt(
                 np.log(self.time) / (self.action_count + np.finfo(float).eps))
             q_best = np.max(ubc_estimate)
             return np.random.choice(
@@ -188,8 +188,6 @@ class KArmedBandit:
             self.q_estimate = self.q_estimate \
                               + self.alpha*(reward - baseline)*(aux_vec-self.gradient_action_prob)
 
-        elif self.use_UBC:
-            pass
         # update the estimate for the given action.
         elif self.alpha == "1/n":
             self.q_estimate[action] += 1.0 / self.action_count[action] * (reward - self.q_estimate[action])
