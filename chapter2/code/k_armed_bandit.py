@@ -141,7 +141,6 @@ class KArmedBandit:
         #update the action count.
         self.action_count[action] += 1
         # update the estimate for the given action.
-        # TODO: add step size
         if self.alpha == "1/n":
             self.q_estimate[action] += 1.0 / self.action_count[action] * (reward - self.q_estimate[action])
         else:
