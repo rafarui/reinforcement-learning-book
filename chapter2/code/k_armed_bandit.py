@@ -10,8 +10,11 @@ import numpy as np
 
 class KArmedBandit:
 
-    def __init__(self, k_arms=10, alpha="1/n", epsilon=0., prior_estimation=0., true_reward=0.,
-                 init_deterministic=False, increment_mu=0., increment_sigma=0.):
+    def __init__(self, k_arms=10, alpha="1/n", epsilon=0, prior_estimation=0,
+                 true_reward=0,  init_deterministic=False, increment_mu=0,
+                 increment_sigma=0, use_gradient=False,
+                 use_baseline_gradient=True,
+                 use_UBC=False,  UBC_param=None):
 
         """
         :param k_arms: `int`
@@ -32,7 +35,17 @@ class KArmedBandit:
         :param increment_sigma: `float`
             standard deviation of normally distributed increment to value functions 
             on each time step for non-stationary problems
+        :param use_gradient: `bool`
+            Use gradient based bandit algorithm
+        :param use_baseline_gradient: `bool`
+            Use baseline in gradient based bandit algorithm
+        :param use_UBC: `bool`
+            Use Upper-Confidence-Bound Action Selection
+        :param UBC_param: `float`
+            controls the degree of exploration in UCB action selection.
+
         """
+
         self.k = k_arms
         self.arms = np.arange(self.k)
         self.time = 0
@@ -44,11 +57,20 @@ class KArmedBandit:
         self.init_deterministic = init_deterministic
         self.increment_mu = increment_mu
         self.increment_sigma = increment_sigma
+        self.use_gradient = use_gradient
+        self.use_baseline_gradient = use_baseline_gradient
+        self.use_UBC = use_UBC
+        self.UBC_param = UBC_param
+        if use_UBC:
+            assert UBC_param is not None, 'If `use_UBC=True`, UBC_param need to be set.'
+
 
         self.q_true = None  # true value for each arm
         self.q_estimate = None  # the current estimate for the reward of each arm
         self.action_count = None # how many times each arm was used.
         self.best_action = None  # the best action amoung all the arms.
+        self.gradient_action_prob = None #gradient action probability
+
 
     def initialize(self):
         """
@@ -82,9 +104,9 @@ class KArmedBandit:
         self.initialize()
         action_rewards_best_action = np.zeros((epochs,2))
         for t in range(epochs):
+            self.time += 1 #added here to avoid problems if using UBC
             action = self.get_action()
             reward = self.step(action)
-            #action_rewards_best_action[t,0] = action
             action_rewards_best_action[t,0] = reward
             if action == self.best_action:
                 action_rewards_best_action[t,1] = 1
@@ -100,6 +122,19 @@ class KArmedBandit:
         """
         if np.random.rand() < self.epsilon:
             return np.random.choice(self.arms)
+
+        if self.use_gradient:
+            _grad_exp = np.exp(self.q_estimate)
+            self.gradient_action_prob = _grad_exp / np.sum(_grad_exp)
+            return np.random.choice(self.arms, p=self.gradient_action_prob)
+        if self.use_UBC:
+            ubc_estimate = self.q_estimate + \
+                             self.UBC_param * np.sqrt(
+                np.log(self.time) / (self.action_count + np.finfo(float).eps))
+            q_best = np.max(ubc_estimate)
+            return np.random.choice(
+                [action for action, q in enumerate(ubc_estimate) if
+                 q == q_best])
 
         q_best = np.max(self.q_estimate)
         return np.random.choice([action
@@ -135,14 +170,26 @@ class KArmedBandit:
         # generate the reward
         reward = self.get_reward(action)
         # update time
-        self.time += 1
+
         #compute the average reward
         self.average_reward += (reward - self.average_reward) / self.time
         #update the action count.
         self.action_count[action] += 1
+
+        if self.use_gradient:
+            aux_vec = np.zeros(self.k) #helper vector to avoid loop over all arms.
+            aux_vec[action] = 1
+
+            if self.use_baseline_gradient:
+                baseline = self.average_reward
+            else:
+                baseline = 0
+
+            self.q_estimate = self.q_estimate \
+                              + self.alpha*(reward - baseline)*(aux_vec-self.gradient_action_prob)
+
         # update the estimate for the given action.
-        # TODO: add step size
-        if self.alpha == "1/n":
+        elif self.alpha == "1/n":
             self.q_estimate[action] += 1.0 / self.action_count[action] * (reward - self.q_estimate[action])
         else:
             self.q_estimate[action] += self.alpha * (reward - self.q_estimate[action])

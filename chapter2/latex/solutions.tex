@@ -85,10 +85,23 @@ Therefore, the $\epsilon$ case definitely occurred on time steps 2 and 5. As it 
 \section{Exercise 2.3}
 
 \textbf{In the comparison shown in Figure 2.2, which method will perform best in the long run in terms of cumulative reward and probability of selecting the best action? How much better will it be? Express your answer quantitatively.}
-\\ \\ 
-On each time step the probability of selecting the best action is $1-\epsilon$ times the probability that the greedy action is the best action, plus $\epsilon$ times the probability that the best action is chosen randomly. Clearly the probability that the best action is chosen randomly is $1/k$, thus we just need to work out the probability that the greedy action is the best action. 
-\\ \\ 
-On the first time step all actions have value 0 and we select an action $A_1$ at random and receive a reward $R_1$. Suppose that $R_1 < 0$. What is the probability that $A_1$ is the best action? 
+\\ \\
+
+The $\epsilon=0.01$ case will perform better in the long run. It is guaranteed we will find the optimal action and then exploit it in the long run. Thus, it will exploit the best action  $99\%$ of the time, while the $\epsilon=0.1$  will exploit the optimal action only $90\%$ of the time.
+Quantitatively, in the long run the $\epsilon$-greedy strategy will take the wrong action in $1 - \epsilon$. We can compute the asymptotic reward as
+ $$(1 - \epsilon) r_{max} + \epsilon r_{mean},$$
+where  $r_{mean}$ is the mean reward and  $r_{max}$ is the maximum reward. 
+
+Let's assume that $r_{mean}=0$ (can we assume 0 for a completely random k-armed bandit or use 1 for the suboptimal greedy case????) and $r_{max} =1.5$ (it seems the asymptotic value for $\epsilon$ and also the greater mean value in the Fig 2.1.,  Then, we have 
+$$
+0.9*1.5 + 0.1 *0 = 1.35 
+$$
+for $\epsilon=0.1$ and 
+$$
+0.99*1.5 + 0.01*0 = 1.485
+$$
+for $\epsilon=0.01$   
+
 
 
 \section{Exercise 2.4}
@@ -103,11 +116,12 @@ We have
 			& = \alpha_n R_n + (1-\alpha_n)\alpha_{n-1}R_{n-1} + (1-\alpha_n)(1-\alpha_{n-1})Q_{n-1} \\
 			& = \alpha_n R_n + (1-\alpha_n)\alpha_{n-1}R_{n-1} + \quad \dots + (1-\alpha_n)(1-\alpha_{n-1})\dots (1-\alpha_2)\alpha_1 R_1 + \\
 			& \quad \quad (1-\alpha_n)(1-\alpha_{n-1})\dots (1-\alpha_2)(1-\alpha_1) Q_1 \\
-			& = Q_1\prod_{j=1}^{n}(1-\alpha_j) + \alpha_n R_n + \sum_{i=1}^{n-1}\alpha_i R_i \prod_{j=i+1}^{n}(1-\alpha_j).
+			& = Q_1\prod_{j=1}^{n}(1-\alpha_j) + \alpha_n R_n + \sum_{i=1}^{n-1}\alpha_i R_i \prod_{j=i+1}^{n}(1-\alpha_j)\\
+			& = Q_1\prod_{j=1}^{n}(1-\alpha_j) + \sum_{i=1}^{n}\alpha_i R_i \prod_{j=i}^{n-1}(1-\alpha_{j+1}).
 \end{align*}
 Therefore, the weighting on $R_n$ is $\alpha_n$ and the weighting on $R_i$ for $i=1,\dots,n-1$ is $\alpha_i \prod_{j=i+1}^{n}(1-\alpha_j)$. Note that when $\alpha_i = \alpha$ for all $i$ the expression above reduces to
 \[
-	(1-\alpha)^n Q_1 + \alpha R_n + \sum_{i=1}^{n-1}\alpha(1-\alpha)^{n-i}R_i = (1-\alpha)^n Q_1 + \sum_{i=1}^{n}\alpha(1-\alpha)^{n-i}R_i,
+	(1-\alpha)^n Q_1 +  \sum_{i=1}^{n-1}\alpha(1-\alpha)^{n-i}R_i = (1-\alpha)^n Q_1 + \sum_{i=1}^{n}\alpha(1-\alpha)^{n-i}R_i,
 \]
 which is exactly (2.6).
 
@@ -229,5 +243,37 @@ Define $G_t(a, b) = H_t(a) - H_t(b)$. Then
 	\Pr\{A_t = a\} = \frac{1}{1 + e^{-G_t(a, b)}} = 1 - \frac{1}{1 + e^{G_t(a, b)}}  = 1 - \Pr\{A_t = b\},   
 \]
 which is the distribution defined by the sigmoid function.
+
+
+\section{Exercise 2.10}
+
+\textbf{Suppose you face a 2-armed bandit task whose true action values change randomly from time step to time step. Specifically, suppose that, for any time step, the true values of actions 1 and 2 are respectively 0.1 and 0.2 with probability 0.5 (case A) and 0.9 and 0.8 with probability 0.5 (case B). If you are not able to tell which case you face at any step, what is the best expectation of success you can achieve and how should you behave to achieve it? Now suppose that on each step you are told whether you are facing case A or case B (although you still don’t know the true action values). This is an associative search task. What is the best expectation of success you can achieve in this task, and how should you behave to achieve it?}
+\\ \\
+If we always choose action 1 then the expected reward will be 
+\[
+	0.5\cdot 0.1 + 0.5\cdot 0.9 = 0.5.
+\]
+If we always choose action 2 then the expected reward will be 
+\[
+0.5\cdot 0.2 + 0.5\cdot 0.8 = 0.5.
+\]
+Hence, if we are not able to tell which case we face at any time step, then no matter how we act the expected reward will always be 0.5.
+\\ \\
+Suppose now that on each time step we are told whether we are facing case A or case B. 
+
+
+\section{Exercise 2.11}
+
+\textbf{Make a figure analogous to Figure 2.6 for the nonstationary case outlined in Exercise 2.5. Include the constant-step-size $\epsilon$-greedy algorithm with $\alpha=0.1$. Use runs of 200,000 steps and, as a performance measure for each algorithm and parameter setting, use the average reward over the last 100,000 steps.}
+\\ \\
+Due to the execution time, we run only for 100,000 steps and the average reward was computed using the last 50,000 steps. 
+
+\begin{figure}
+	\centering
+	\caption{A parameter study of the various bandit algorithms. Each point is the average reward obtained over 50,000 steps with a particular algorithm at a particular setting of its parameter}
+	\includegraphics[scale=0.5]{ex2_11}
+	\label{fig:KArmedBanditNonStationaryParameterStudy}
+\end{figure}
+
 
 \end{document}
