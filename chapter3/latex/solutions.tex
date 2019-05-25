@@ -71,5 +71,62 @@ A company could use reinforcement learning to control the air temperature in its
 \\ \\
 Consider the example of a trader using reinforcement learning to buy and sell shares at the beginning of each day with the goal of maximising profit. A good trading strategy will take into account the prices of the shares over the last several days, perhaps even the last several months. Is this an example of a goal-directed learning task which the MDP framework does not usefully represent? Or can we include the historic share prices in the current state vector?
 
+--------------------------
+Rafael:
+
+I dont think it is a good example. The state can be anything you want, the idea of state is very abstract. 
+\begin{quote}
+The MDP framework is abstract and flexible and can be applied to many different
+problems in many different ways. For example, the time steps need not refer to fixed
+intervals of real time; they can refer to arbitrary successive stages of decision making
+and acting. 
+\end{quote}
+
+I think we need to think in cases where there are no win solutions, or when the reward is decoupled to the action. 
+Maybe lottery. The result is completely decoupled of one's action. I dont know.
+I cannot think in any "no win" example 
+
+Non stationary examples too. 
+
+
+\section{Exercise 3.3}
+\textbf{
+Consider the problem of driving. You could define the actions in terms of
+the accelerator, steering wheel, and brake, that is, where your body meets the machine.
+Or you could define them farther out—say, where the rubber meets the road, considering
+your actions to be tire torques. Or you could define them farther in—say, where your
+brain meets your body, the actions being muscle twitches to control your limbs. Or you
+could go to a really high level and say that your actions are your choices of where to drive.
+What is the right level, the right place to draw the line between agent and environment?
+On what basis is one location of the line to be preferred over another? Is there any
+fundamental reason for preferring one location over another, or is it a free choice?
+}
+\\ \\
+
+The level will depend on the task. If the task has minimal external influence. One could define the actions in terms of
+the accelerator, steering wheel, and brake. It we think in term os a self driving car, driving in a city with a lot of external players then
+maybe it is better to model everything at a much higher level. 
+
+
+
+
+
+\section{Exercise 3.4}
+\textbf{
+Give a table analogous to that in Example 3.3, but for $p(s',r| s,a)$. It
+should have columns for $s, a, s', r$, and $p(s', r | s, a)$, and a row for every 4-tuple for which
+$p(s',r| s,a) > 0$. 
+}
+\\ \\
+\begin{center}
+\begin{tabular}{llll|l}
+$s$ & $a$ & $s'$ & r & $p(s' ,r|s,a)$ \\ \hline
+ high   &  search   &  high    & $r_{\text{search}}$  &                \\
+  high  &    search &  low    &  $r_{\text{search}}$ &                \\
+    &     &      &   &                \\
+    &     &      &   &                \\
+    &     &      &   &               
+\end{tabular}
+\end{center}
 
 \end{document}
