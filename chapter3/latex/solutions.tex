@@ -104,7 +104,7 @@ fundamental reason for preferring one location over another, or is it a free cho
 \\ \\
 
 The level will depend on the task. If the task has minimal external influence. One could define the actions in terms of
-the accelerator, steering wheel, and brake. It we think in term os a self driving car, driving in a city with a lot of external players then
+the accelerator, steering wheel, and brake. If we think in terms of a self driving car, driving in a city with a lot of external players then
 maybe it is better to model everything at a much higher level. 
 
 
@@ -118,15 +118,39 @@ should have columns for $s, a, s', r$, and $p(s', r | s, a)$, and a row for ever
 $p(s',r| s,a) > 0$. 
 }
 \\ \\
-\begin{center}
-\begin{tabular}{llll|l}
-$s$ & $a$ & $s'$ & r & $p(s' ,r|s,a)$ \\ \hline
- high   &  search   &  high    & $r_{\text{search}}$  &                \\
-  high  &    search &  low    &  $r_{\text{search}}$ &                \\
-    &     &      &   &                \\
-    &     &      &   &                \\
-    &     &      &   &               
+\begin{table}[h!]
+\centering
+\begin{tabular}{llll|c}
+    $s$ & $a$ & $s'$ & $r$ & $p(s', r | s, a)$ \\
+    \hline
+     \texttt{high}& \texttt{search}&  \texttt{high}&  $r_{\texttt{search}}$& $\alpha$  \\
+     \texttt{high}& \texttt{search}&  \texttt{low}&   $r_{\texttt{search}}$& $1 - \alpha$ \\
+     \texttt{high}& \texttt{wait}&  \texttt{high}&   $r_{\texttt{wait}}$&  $1$ \\
+     \texttt{low}& \texttt{recharge}&   \texttt{high}&    $0$&   $1$\\
+     \texttt{low}& \texttt{search}&  \texttt{high}&  $-3$& $1 - \beta$  \\
+     \texttt{low}& \texttt{search}&  \texttt{low}&   $r_{\texttt{search}}$& $\beta $\\
+     \texttt{low}& \texttt{wait}&  \texttt{low}&   $r_{\texttt{wait}}$&  $1$
 \end{tabular}
-\end{center}
+\caption{Transition table}
+\end{table}
+
+
+\section{Exercise 3.5}
+\textbf{
+The equations in Section 3.1 are for the continuing case and need to be
+modified (very slightly) to apply to episodic tasks. Show that you know the modifications
+needed by giving the modified version of (3.3). 
+}
+\\ \\
+Equation 3.3 states:
+\begin{equation*}
+\sum_{s'\in \mathcal{S}}\sum_{r\in \mathcal{R}}{p(s',r|s,a)=1}, \forall s\in \mathcal{S}, a\in \mathcal{A}(s)
+\end{equation*}
+
+For episode tasks there are two sets of states, non terminal states $S$ and the terminal states $S^+$. The transition probability sums to one for state in $S$. However we need to consider the transition to the terminal state. Hence
+
+\begin{equation*}
+\sum_{s'\in \mathcal{S}^+}\sum_{r\in \mathcal{R}}{p(s',r|s,a)=1}, \forall s\in \mathcal{S}, a\in \mathcal{A}(s)
+\end{equation*}
 
 \end{document}
