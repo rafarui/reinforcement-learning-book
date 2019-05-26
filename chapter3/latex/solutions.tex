@@ -153,4 +153,25 @@ For episode tasks there are two sets of states, non terminal states $S$ and the 
 \sum_{s'\in \mathcal{S}^+}\sum_{r\in \mathcal{R}}{p(s',r|s,a)=1}, \forall s\in \mathcal{S}, a\in \mathcal{A}(s)
 \end{equation*}
 
+
+
+\section{Exercise 3.6}
+\textbf{
+Suppose you treated pole-balancing as an episodic task but also used
+discounting, with all rewards zero except for $-1$ upon failure. What then would the
+return be at each time? How does this return differ from that in the discounted, continuing
+formulation of this task? 
+}
+\\ \\
+For the discounted case we have:
+$$
+    G_t = - \gamma^{T - t}.
+$$
+In the continuing case the value is
+\begin{align*} 
+ G_t =& - \gamma^{T_1-t}-\gamma^{T_2-t}-\gamma^{T_3-t}-\dots, \\ 
+     =&  - \sum_{\tau \in \mathcal{T}} \gamma^{\tau - t},
+\end{align*}
+where $\mathcal{T} = \left\{T_1,T_2,T_3,\dots\right\}$ is the set of times after $t$ at which the pole falls over.
+
 \end{document}
