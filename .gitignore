@@ -9,10 +9,22 @@ images/
 .bbl
 .blg
 .out
-.synctex*
-.tcp
-.tps
-.aux
+*.synctex*
+## Core latex/pdflatex auxiliary files:
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.bbl
+*.blg
+*.cb
+*.cb2
+.*.lb
+*.tps
+*.tcp
 
 # Distribution / packaging
 .Python
