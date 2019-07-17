@@ -304,6 +304,50 @@ so $v_{\pi_{\text{left}}}$ and $v_{\pi_{\text{right}}}$ are both optimal.
 \\ \\
 In fact, $v_{\pi_{\text{left}}}$ is optimal for $\gamma \leq 0.5$ and $v_{\pi_{\text{right}}}$ is optimal for $\gamma \geq 0.5$.
  	
+\section{Exercise 3.23}
+
+\textbf{Give the Bellman equation for $q_*$ for the recycling robot.}
+\\ \\
+When the battery is high the robot can either search or wait, and when the battery is low the robot can either search, wait or recharge. Thus there are five equations in total:
+\begin{align*}
+	q_*(\texttt{h}, \texttt{s}) & = p(\texttt{h} | \texttt{h}, \texttt{s}) \big[r(\texttt{h}, \texttt{s}, \texttt{h}) + 
+	\gamma \max\{ q_*(\texttt{h}, \texttt{s}), q_*(\texttt{h}, \texttt{w}) \} \big] \\
+	& \quad + p(\texttt{l} | \texttt{h}, \texttt{s}) \big[r(\texttt{h}, \texttt{s}, \texttt{l}) + 
+	\gamma \max\{ q_*(\texttt{l}, \texttt{s}), q_*(\texttt{l}, \texttt{w}), q_*(\texttt{l}, \texttt{re}) \} \big] \\
+	& = \alpha \big[ r_{\text{search}} + \gamma \max \{ q_*(\texttt{h}, \texttt{s}), q_*(\texttt{h}, \texttt{w}) \} \big] +
+	(1 - \alpha) \big[ r_{\text{search}} + \gamma \max\{ q_*(\texttt{l}, \texttt{s}), q_*(\texttt{l}, \texttt{w}), q_*(\texttt{l}, \texttt{re}) \} \big] \\
+	& = \alpha \gamma \max \{ q_*(\texttt{h}, \texttt{s}), q_*(\texttt{h}, \texttt{w}) \} + r_{\text{search}} +
+	(1 - \alpha) \gamma \max\{ q_*(\texttt{l}, \texttt{s}), q_*(\texttt{l}, \texttt{w}), q_*(\texttt{l}, \texttt{re}) \},
+\end{align*}
+
+\begin{align*}
+	q_*(\texttt{h}, \texttt{w}) & = r(\texttt{h}, \texttt{w}, \texttt{h}) + 
+	\gamma \max\{ q_*(\texttt{h}, \texttt{s}), q_*(\texttt{h}, \texttt{w}) \}  \\
+	& = r_{\text{wait}} + \gamma \max \{ q_*(\texttt{h}, \texttt{s}), q_*(\texttt{h}, \texttt{w}) \},
+\end{align*}
+
+\begin{align*}
+	q_*(\texttt{l}, \texttt{s}) & = p(\texttt{h} | \texttt{l}, \texttt{s}) \big[r(\texttt{l}, \texttt{s}, \texttt{h}) + 
+	\gamma \max\{ q_*(\texttt{h}, \texttt{s}), q_*(\texttt{h}, \texttt{w}) \} \big] \\
+	& \quad + p(\texttt{l} | \texttt{l}, \texttt{s}) \big[r(\texttt{l}, \texttt{s}, \texttt{l}) + 
+	\gamma \max\{ q_*(\texttt{l}, \texttt{s}), q_*(\texttt{l}, \texttt{w}), q_*(\texttt{l}, \texttt{re}) \} \big] \\
+	& = (1 - \beta) \big[ -3 + \gamma \max \{ q_*(\texttt{h}, \texttt{s}), q_*(\texttt{h}, \texttt{w}) \} \big] +
+	\beta \big[ r_{\text{search}} 
+	+ \gamma \max\{ q_*(\texttt{l}, \texttt{s}), q_*(\texttt{l}, \texttt{w}), q_*(\texttt{l}, \texttt{re}) \} \big],
+\end{align*}
+
+\begin{align*}
+	q_*(\texttt{l}, \texttt{w}) & = r(\texttt{l}, \texttt{w}, \texttt{l}) + 
+	\gamma \max\{ q_*(\texttt{l}, \texttt{s}), q_*(\texttt{l}, \texttt{w}), q_*(\texttt{l}, \texttt{re}) \}  \\
+	& = r_{\text{wait}} + \gamma \max \{ q_*(\texttt{l}, \texttt{s}), q_*(\texttt{l}, \texttt{w}), q_*(\texttt{l}, \texttt{re}) \},
+\end{align*}
+
+\begin{align*}
+	q_*(\texttt{l}, \texttt{re}) & = r(\texttt{l}, \texttt{re}, \texttt{h}) + 
+	\gamma \max\{ q_*(\texttt{h}, \texttt{s}), q_*(\texttt{h}, \texttt{w}) \}  \\
+	& = \gamma \max \{ q_*(\texttt{h}, \texttt{s}), q_*(\texttt{h}, \texttt{w}) \}.
+\end{align*}
+
 
 
 
