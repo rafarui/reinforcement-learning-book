@@ -348,8 +348,83 @@ When the battery is high the robot can either search or wait, and when the batte
 	& = \gamma \max \{ q_*(\texttt{h}, \texttt{s}), q_*(\texttt{h}, \texttt{w}) \}.
 \end{align*}
 
+\section{Exercise 3.24} 
+
+\textbf{Figure 3.5 gives the optimal value of the best state of the gridworld as $24.4$, to one decimal place. Use your knowledge of the optimal policy and (3.8) to express this value symbolically, and then to compute it to three decimal places.}
+\\ \\
+Suppose that the agent is at position $\texttt{A}$ on time step $t$. Then it will move to position $\texttt{A}'$ and receive an undiscounted reward of 10 on time step $t+1$. Next it will move north back towards position $\texttt{A}$, arriving there on time step $t+5$. On each of time steps $t+2$ to $t+5$ it will receive a reward of 0. Then on time step $t+6$ it will move back to $\texttt{A}'$ and receive a reward of $10 \cdot 0.9^5$, and so on.  
+\\ \\ 
+Thus we have
+\begin{align*}
+	v_*(\texttt{A}) & = 10 \sum_{k \in \{0, 5, 10, 15, \dots\}}^{} 0.9^k = 24.419
+\end{align*}
+to three decimal places. 
+
+\section{Exercise 3.25}
+
+\textbf{Give an equation for $v_*$ in terms of $q_*$.}
+\\ \\ 
+We have 
+\[
+	v_*(s) = \max_{a \in \mathcal{A}(s)} q_*(s, a).	
+\]
+
+\section{Exercise 3.26}
+
+\textbf{Give an equation for $q_*$ in terms of $v_*$ and the four-argument $p$.}
+\\ \\
+We have 
+\[
+	q_*(s, a) = \sum_{s', r} p(s', r | s, a) \big[r + \gamma v_*(s')\big].
+\]
 
 
+\section{Exercise 3.27}
+
+\textbf{Give an equation for $\pi_*$ in terms of $q_*$.}
+\\ \\
+We have 
+\begin{equation*}
+	\pi_*(a | s) = \begin{cases}
+						1 &\text{if } a = \argmax_x q_*(s, x) \\
+						0 &\text{otherwise }
+					\end{cases}
+\end{equation*}
+
+
+\section{Exercise 3.28}
+
+\textbf{Give an equation for $\pi_*$ in terms of $v_*$ and the four-argument $p$.}
+\\ \\
+We have 
+\begin{equation*}
+	\pi_*(a | s) = \begin{cases}
+						1 &\text{if } a = \argmax_x \sum_{s', r} p(s', r | s, x) \big[r + \gamma v_*(s')\big] \\
+						0 &\text{otherwise }
+					\end{cases}
+\end{equation*}
+
+
+\section{Exercise 3.29}
+
+\textbf{Rewrite the four Bellman equations for the four value functions ($v_\pi$, $v_*$, $q_\pi$, and $q_*$) in terms of the three argument function $p$ (3.4) and the two-argument function $r$ (3.5).}
+\\ \\
+We have
+\begin{align*}
+	v_\pi(s) & = \sum_{a} \pi(a | s) \Big[ r(s, a) + \gamma \sum_{s'} p(s' | s, a) v_\pi(s') \Big],
+\end{align*}
+
+\begin{align*}
+	v_*(s) & = \max_{a} \Big[ r(s, a) + \gamma \sum_{s'} p(s' | s, a) v_*(s') \Big],
+\end{align*}
+
+\begin{align*}
+	q_\pi(s, a) & = r(s, a) + \gamma \sum_{s'} p(s' | s, a) \sum_{a'} \pi(a' | s') q_\pi(s', a'),
+\end{align*}
+
+\begin{align*}
+	q_*(s, a) & = r(s, a) + \gamma \sum_{s'} p(s' | s, a) \max_{a'} q_*(s', a').
+\end{align*}
 
 
 \end{document}
