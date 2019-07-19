@@ -91,7 +91,28 @@ Farther out, where the rubber meets the road, we probably do not have absolute c
 \\ \\
 Farther in, we do have absolute control over our own limbs, but this boundary is not on the limit of absolute control and defining actions as muscle twitches would appear to be overkill. 
 
+\newpage
 \section{Exercise 3.4}
+
+\begin{table}[h]
+	\centering
+	\small{
+		\begin{tabular}{| l | l | l | l | l |}
+			\hline
+			$s$ & $a$ & $s'$ & $r$ & $p(s', r | s, a)$ \\
+			\hline
+			\texttt{high} & \texttt{search} & \texttt{high} & $r_{\texttt{search}}$ & $\alpha$ \\
+			\texttt{high} & \texttt{search} & \texttt{low} & $r_{\texttt{search}}$ & $1 - \alpha$ \\
+			\texttt{high} & \texttt{wait} & \texttt{high} & $r_{\texttt{wait}}$ & $1$ \\
+			\texttt{low} & \texttt{search} & \texttt{low} & $r_{\texttt{search}}$ & $\beta$ \\
+			\texttt{low} & \texttt{search} & \texttt{high} & $-3$ & $1 - \beta$ \\
+			\texttt{low} & \texttt{wait} & \texttt{low} & $r_{\texttt{wait}}$ & $1$ \\
+			\texttt{low} & \texttt{recharge} & \texttt{high} & $0$ & $1$ \\
+			\hline
+		\end{tabular}
+	}
+\end{table}
+
 
 \section{Exercise 3.5}
 
@@ -267,8 +288,17 @@ We have
 
 \section{Exercise 3.20}
 
+\textbf{Draw or describe the optimal state-value function for the golf example.}
+\\ \\
+The optimal state-value function would have four values, $-3$, $-2$, $-1$ and $0$. From anywhere off the green we would use the driver and the contours would be exactly the same as for $q_*(s, \texttt{driver})$. From anywhere on the green we would use the putter and the value would be $-1$, except for the hole itself which has value $0$.
+
 
 \section{Exercise 3.21}
+
+\textbf{Draw or describe the contours of the optimal action-value function for putting, $q_*(s, \texttt{putter})$, for the golf example.}
+\\ \\
+For regions with values $0$, $-1$ and $-2$ the contours would be exactly the same as for $v_{\texttt{putt}}$, because after using the putter for the first stroke the ball would already be on the green. The $-3$ contour line would be further out than for $v_{\texttt{putt}}$. It would be such that, putting from anywhere inside the $-3$ contour we would be able to reach the region from which we could reach then green with a single stroke of the driver. In this case, after using the putter for the first stroke, we would drive to the green and then putt, sinking the ball in 3 strokes.
+There would be one more contour further out, including the tee, with value $-4$. In this case, after using the putter for the first stroke, we would hit two strokes with the driver to reach the green and then putt, sinking the ball in 4 strokes.
 
 
 \section{Exercise 3.22}
