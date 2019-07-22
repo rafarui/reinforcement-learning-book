@@ -60,7 +60,7 @@
 
 \textbf{Devise three example tasks of your own that fit into the MDP framework, identifying for each its states, actions, and rewards. Make the three examples as \emph{different} from each other as possible. The framework is abstract and flexible and can be applied in many different ways. Stretch its limits in some way in at least one of your examples.}
 \\ \\
-An e-commerce sit could use reinforcement learning to control daily pricing of products. The actions would be the the prices set for each product on each day. The states might include the month of the year, the day of the week and the proximity to special days such as Christmas and Valentine's Day. The reward would be the profit at the end of each day.
+An e-commerce site could use reinforcement learning to control daily pricing of products. The actions would be the prices set for each product on each day. The states might include the month of the year, the day of the week and the proximity to special days such as Christmas and Valentine's Day. The reward would be the profit at the end of each day.
 \\ \\
 The manager of a football team could use reinforcement learning to pick the 11 players to play each game. The actions would be the team selection. The states could be the opponent, whether the game is home or away and the fitness of the players. The reward would be 0, 1 or 3 depending on whether the team lost, drew or won the game.  
 \\ \\
@@ -140,7 +140,7 @@ In the discounted, continuing formulation of this task the reward received at ea
 
 \textbf{Imagine that you are designing a robot to run a maze. You decide to give it a reward of $+1$ for escaping from the maze and a reward of zero at all other times. The task seems to break down naturally into episodes—the successive runs through the maze—so you decide to treat it as an episodic task, where the goal is to maximize expected total reward (3.7). After running the learning agent for a while, you find that it is showing no improvement in escaping from the maze. What is going wrong? Have you effectively communicated to the agent what you want it to achieve?}
 \\ \\
-The reward on each time step will be 1, regardless of how long it takes the agent to escape. As we only give the robot a reward of $+1$ on the final time step, it has no incentive to escape on the 10th time step as opposed to the 1000th time step. Assuming that we want the robot to escape quickly, a much better idea would be to give it a reward of $-1$ on each time step that is it inside the maze. 
+The long-term reward on each time step will be 1, regardless of how long it takes the agent to escape. As we only give the robot a reward of $+1$ on the final time step, it has no incentive to escape on the 10th time step as opposed to the 1000th time step. Assuming that we want the robot to escape quickly, a much better idea would be to give it a reward of $-1$ on each time step that is it inside the maze. 
 
 \section{Exercise 3.8}
 
