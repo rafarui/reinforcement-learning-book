@@ -1,0 +1,119 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{fullpage}
+\usepackage{caption}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{enumerate}
+\usepackage[all]{xy}
+\usepackage[margin=1in]{geometry}
+\usepackage{multirow}
+\usepackage{bm}
+\usepackage[toc,page]{appendix}
+\usepackage{geometry}
+\usepackage{siunitx}
+
+\usepackage{listings}
+\usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+
+\geometry{tmargin=0.7in,bmargin=0.7in,lmargin=0.9in,rmargin=0.9in}
+
+\numberwithin{equation}{section}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{exa}[thm]{Example}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{claim}[thm]{Claim}
+\theoremstyle{remark}
+\newtheorem*{rem}{Remark}
+
+
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\N}{\mathbb N}
+\newcommand{\R}{\mathbb R}
+\newcommand{\C}{\mathbb C}
+\newcommand{\HH}{\mathbb H}
+\newcommand{\F}{\mathbb F}
+\newcommand{\E}{\mathbb E}
+
+\DeclareMathOperator*{\argmax}{argmax}
+
+
+\title{Reinforcement Learning: An Introduction \\ Attempted Solutions \\ Chapter 4}
+\author{Scott Brownlie \& Rafael Rui}
+\date{}
+
+
+\begin{document}
+%\pagenumbering{gobble}
+\maketitle
+%\newpage
+%\pagenumbering{arabic}
+
+\section{Exercise 4.1}
+
+\textbf{In Example 4.1, if $\pi$ is the equiprobable random policy, what is $q_\pi(11, \texttt{down})$. What is $q_\pi(7, \texttt{down})$?}
+\\ \\
+As moving downwards from 11 results in the terminal state, $q_\pi(11, \texttt{down}) = -1$. Moving right from 7 leaves the state unchanged, so 
+\[
+	q_\pi(7, \texttt{down}) = -1 + v_\pi(7) = -1 + -20 = -21.
+\]
+
+\section{Exercise 4.2}
+
+\textbf{In Example 4.1, suppose a new state 15 is added to the gridworld just below state 13, and its actions, \texttt{left}, \texttt{up}, \texttt{right}, and \texttt{down}, take the agent to states 12, 13, 14, and 15, respectively. Assume that the transitions from the original states are unchanged. What, then, is $v_\pi(15)$ for the equiprobable random policy? Now suppose the dynamics of state 13 are also changed, such that action \texttt{down} from state 13 takes the agent to the new state 15. What is $v_\pi(15)$ for the equiprobable random policy in this case?}
+\\ \\
+When the transitions from the original states are unchanged we have
+\begin{align*}
+	v_\pi(15) & = -1 + 0.25 (v_\pi(12)+ v_\pi(13) + v_\pi(14) + v_\pi(15)) \\
+			  & = -1 + 0.25 (-22 -20 -14) + 0.25 \cdot v_\pi(15) \\
+	\iff 0.75 \cdot v_\pi(15) & = -15 \\
+	\iff v_\pi(15) & = -20.
+\end{align*}
+Now suppose that the dynamics of state 13 are changed such that action \texttt{down} from state 13 takes the agent to the new state 15. Since $v_\pi(15) = -20 = v_\pi(13)$ in the case of unchanged dynamics, $v_\pi(15)$ should remain $-20$. We can formally prove this:
+\begin{align*}
+	v_\pi(15) & = -1 + 0.25 (v_\pi(12)+ v_\pi(13) + v_\pi(14) + v_\pi(15)) \\
+	& = -1 + 0.25 (-22 -14) + 0.25 \cdot v_\pi(13) + 0.25 \cdot v_\pi(15) \\
+	& = -10 + 0.25 \cdot v_\pi(13) + 0.25 \cdot v_\pi(15),
+\end{align*}
+where
+\begin{align*}
+	v_\pi(13) & = -1 + 0.25 (v_\pi(9)+ v_\pi(12) + v_\pi(14) + v_\pi(15)) \\
+	& = -1 + 0.25 (-20 -22 -14) + 0.25 \cdot v_\pi(15) \\
+	& = -15 + 0.25 \cdot v_\pi(15).
+\end{align*}
+Hence,
+\begin{align*}
+	v_\pi(15) & = -10 + 0.25 (-15 + 0.25 \cdot v_\pi(15)) + 0.25 \cdot v_\pi(15) \\
+			  & = -13.75 + 0.3125 \cdot v_\pi(15) \\
+	\iff 0.6875 \cdot v_\pi(15) & = -13.75 \\
+	\iff v_\pi(15) & = -20.
+\end{align*}
+
+\section{Exercise 4.3}
+
+\textbf{What are the equations analogous to (4.3), (4.4), and (4.5) for the action-value function $q_\pi$ and its successive approximation by a sequence of functions $q_0$, $q_1$, $q_2$,...?}
+\\ \\
+We have
+\begin{align*}
+	q_\pi(s, a) & = \E_\pi [G_t | S_t=s, A_t=a] \\
+				& = \E_\pi [R_{t+1} + \gamma G_{t+1} | S_t=s, A_t=a] \\
+				& = \E_\pi [R_{t+1} + \gamma q_\pi(S_{t+1}, A_{t+1}) |  S_t=s, A_t=a] \\
+				& = \sum_{s', r} p(s', r | s, a)\Big[ r + \gamma \sum_{a'} \pi(a' | s') q_\pi(s', a') \Big]
+\end{align*}
+and
+\begin{align*}
+	q_{k+1}(s, a) & = \E_\pi [R_{t+1} + \gamma q_k(S_{t+1}, A_{t+1}) |  S_t=s, A_t=a] \\
+				  & = \sum_{s', r} p(s', r | s, a)\Big[ r + \gamma \sum_{a'} \pi(a' | s') q_k(s', a') \Big].
+\end{align*}
+
+
+
+
+\end{document}
