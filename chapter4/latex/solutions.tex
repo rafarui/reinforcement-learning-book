@@ -113,7 +113,52 @@ and
 				  & = \sum_{s', r} p(s', r | s, a)\Big[ r + \gamma \sum_{a'} \pi(a' | s') q_k(s', a') \Big].
 \end{align*}
 
+\section{Exercise 4.4}
+
+\textbf{The policy iteration algorithm on page 80 has a subtle bug in that it may never terminate if the policy continually switches between two or more policies that are equally good. This is ok for pedagogy, but not for actual use. Modify the pseudocode so that convergence is guaranteed.}
+\\ \\
+In part 3 of the algorithm, instead of checking if the policy is stable, we should check if the policy has improved as follows:
+\begin{align*}
+	& \text{\emph{policy-improved}} \gets false \\
+	& \text{For } \text{each } s \in \mathcal{S} \\
+	& \quad v \gets V(s) \\
+	& \quad \pi(s) \gets \argmax_a \sum_{s', r} p(s', r | s, a) [r + \gamma V(s')] \\
+	& \quad v_{new} \gets \sum_{s', r} p(s', r | s, \pi(s)) [r + \gamma V(s')] \\
+	& \quad \text{If } v_{new} > v, \text{ then } \text{\emph{policy-improved}} \gets true \\
+	& \text{If \emph{policy-improved}, then go to 2, else stop and return } V \approx v_*, \pi \approx \pi_*.
+\end{align*}
 
 
+\section{Exercise 4.5}
+
+\textbf{How would policy iteration be defined for action values? Give a complete algorithm for computing $q_*$, analogous to that on page 80 for computing $v_*$. Please pay special attention to this exercise, because the ideas involved will be used throughout the rest of the book.}
+\\ \\
+The algorithm is
+\begin{align*}
+	1. & \text{ Initialisation} \\
+	   & Q(s, a) \in \R \text{ and } \pi(s) \in \mathcal{A}(s) \text{ for all } s \in \mathcal{S}, a \in \mathcal{A}(s) \\ \\	  
+	2. & \text{ Policy Evaluation} \\ 
+	   & \text{ Loop:} \\
+	   & \quad \Delta \gets 0 \\
+	   & \quad \text{Loop for each } s \in \mathcal{S}: \\
+	   & \quad \quad \text{Loop for each } a \in \mathcal{A}(s): \\
+	   & \quad \quad q \gets Q(s, a) \\
+	   & \quad \quad Q(s, a) \gets \sum_{s', r} p(s', r | s, a) \Big[r + \gamma Q(s', \pi(s'))\Big] \\
+	   & \quad \quad \Delta \gets \max(\Delta, |q - Q(s, a)|) \\
+	   & \text{ until } \Delta < \theta \\ \\
+	3. & \text{ Policy Improvement} \\
+	   & \text{\emph{policy-stable}} \gets true \\
+	   & \text{For each } s \in \mathcal{S}: \\
+	   & \quad \text{\emph{old-action}} \gets \pi(s) \\
+	   & \quad \pi(s) \gets \argmax_a \sum_{s', r} p(s', r | s, a) \Big[r + \gamma Q(s', \pi(s'))\Big] \\
+	   & \quad \text{If \emph{old-action}} \neq \pi(s), \text{then \emph{policy-stable}} \gets false \\
+	   & \text{If \emph{policy-stable}, then stop and return } Q \approx q_*, \pi \approx \pi_*, \text{else go to 2}.
+\end{align*}
+
+\section{Exercise 4.5}
+
+\textbf{Suppose you are restricted to considering only policies that are $\epsilon$-soft, meaning that the probability of selecting each action in each state, $s$, is at least $\epsilon/|\mathcal{A}(s)|$. Describe qualitatively the changes that would be required in each of the steps 3, 2, and 1, in that order, of the policy iteration algorithm for $v_*$ on page 80.}
+\\ \\
+Assume that $\epsilon$-soft means that, for all $s \in \mathcal{S}$, $\pi(s) = a$ for some $a \in \mathcal{A}(s)$ with probability $1-\epsilon$, else $\pi(s)$ is chosen uniformly at random from $\mathcal{A}(s)$.
 
 \end{document}
