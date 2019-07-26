@@ -155,10 +155,32 @@ The algorithm is
 	   & \text{If \emph{policy-stable}, then stop and return } Q \approx q_*, \pi \approx \pi_*, \text{else go to 2}.
 \end{align*}
 
-\section{Exercise 4.5}
+\section{Exercise 4.6}
 
 \textbf{Suppose you are restricted to considering only policies that are $\epsilon$-soft, meaning that the probability of selecting each action in each state, $s$, is at least $\epsilon/|\mathcal{A}(s)|$. Describe qualitatively the changes that would be required in each of the steps 3, 2, and 1, in that order, of the policy iteration algorithm for $v_*$ on page 80.}
 \\ \\
-Assume that $\epsilon$-soft means that, for all $s \in \mathcal{S}$, $\pi(s) = a$ for some $a \in \mathcal{A}(s)$ with probability $1-\epsilon$, else $\pi(s)$ is chosen uniformly at random from $\mathcal{A}(s)$.
+As the policy is now non-deterministic, for each state $s \in \mathcal{S}$ we must define a probability distribution over the actions $a \in \mathcal{A}(s)$ such that $\pi(s, a) \geq \epsilon/|\mathcal{A}(s)|$ for all $a \in \mathcal{A}(s)$. 
+\\ \\
+In step 3, \emph{old-action} now becomes a distribution as opposed to a single action, and the policy is improved by finding the distribution which maximises the expected return with respect to the current value function, where the expectation is taken over the actions. This can be solved using linear programming. The policy is stable if the distribution does not change for any $s \in \mathcal{S}$, subject to some small tolerance.
+\\ \\
+In step 2, when estimating the value of each state $s \in \mathcal{S}$ we need to compute its expectation over all possible actions given the current probability distribution over $a \in \mathcal{A}(s)$. Finally, in step 1 we need to initialise $\pi(s, a) \geq \epsilon/|\mathcal{A}(s)|$ for all $s \in \mathcal{S}$, $a \in \mathcal{A}(s)$.
+
+
+\section{Exercise 4.7}
+
+
+\section{Exercise 4.8}
+
+\textbf{Why does the optimal policy for the gambler’s problem have such a curious form? In particular, for capital of 50 it bets it all on one flip, but for capital of 51 it does not. Why is this a good policy?}
+\\ \\
+Whenever the gambler's capital is at least 50, if he bets it all then he either reaches his goal with probability $p_h$ or loses everything with probability $1 - p_h$. Thus, if he were to follow this policy then there would be no advantage to having a capital of $99$ as opposed to $50$. Clearly he can do better. 
+\\ \\
+When he has 51, if he bets 1 then with probability $p_h$ his new capital is $52$ and with probability $1 - p_h$ his new capital is $50$. Compared to the policy of always betting the full capital, this policy of only betting 1 when he has capital of 51 can been seen as a \emph{free hit} at moving closer to his goal, because he will either increase his capital by 1 or, in the worst case, he is down to 50 and he can then stake everything on the next bet. The policy is clearly more sensible than betting the full 51.  
+
+\section{Exercise 4.9}
+
+
+\section{Exercise 4.10}
+
 
 \end{document}
