@@ -60,9 +60,9 @@
 
 \textbf{In Example 4.1, if $\pi$ is the equiprobable random policy, what is $q_\pi(11, \texttt{down})$. What is $q_\pi(7, \texttt{down})$?}
 \\ \\
-As moving downwards from 11 results in the terminal state, $q_\pi(11, \texttt{down}) = -1$. Moving right from 7 leaves the state unchanged, so 
+As moving downwards from 11 results in the terminal state, $q_\pi(11, \texttt{down}) = -1$. Moving down from 7 leaves the agent in state 11, so 
 \[
-	q_\pi(7, \texttt{down}) = -1 + v_\pi(7) = -1 + -20 = -21.
+	q_\pi(7, \texttt{down}) = -1 + v_\pi(11) = -1 - 14 = -15.
 \]
 
 \section{Exercise 4.2}
@@ -167,6 +167,22 @@ In step 2, when estimating the value of each state $s \in \mathcal{S}$ we need t
 
 
 \section{Exercise 4.7}
+
+The optimal policy and value function for this problem are shown in Figures \ref{fig:policy_4_7} and \ref{fig:value_function_4_7} respectively.
+
+\begin{figure}[h]
+	\centering
+	\caption{Optimal policy for Exercise 4.7}
+	\includegraphics[scale=0.75]{policy_4_7.png}
+	\label{fig:policy_4_7}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\caption{Optimal value function for Exercise 4.7}
+	\includegraphics[scale=0.75]{value_function_4_7.png}
+	\label{fig:value_function_4_7}
+\end{figure}
 
 
 \section{Exercise 4.8}
