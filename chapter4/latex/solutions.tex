@@ -189,9 +189,39 @@ The optimal policy and value function for this problem are shown in Figures \ref
 
 \textbf{Why does the optimal policy for the gambler’s problem have such a curious form? In particular, for capital of 50 it bets it all on one flip, but for capital of 51 it does not. Why is this a good policy?}
 \\ \\
-Whenever the gambler's capital is at least 50, if he bets it all then he either reaches his goal with probability $p_h$ or loses everything with probability $1 - p_h$. Thus, if he were to follow this policy then there would be no advantage to having a capital of $99$ as opposed to $50$. Clearly he can do better. 
+Assume that the value of all states are initialised as 0, except $s=100$ for which the value is 1. Assume also that we sweep through the states in increasing order. As $s=100$ cannot be reached from any state less than 50, the values of all states less than 50 will remain 0 during the first sweep. For $s=50$, the only action with non-zero value with respect to the initial value function is $a=50$, so $V(50)$ will be set to $0.4 \cdot 1 + 0.6 \cdot 0 = 0.4$.
 \\ \\
-When he has 51, if he bets 1 then with probability $p_h$ his new capital is $52$ and with probability $1 - p_h$ his new capital is $50$. Compared to the policy of always betting the full capital, this policy of only betting 1 when he has capital of 51 can been seen as a \emph{free hit} at moving closer to his goal, because he will either increase his capital by 1 or, in the worst case, he is down to 50 and he can then stake everything on the next bet. The policy is clearly more sensible than betting the full 51.  
+Now for $s=51$ there are two actions with non-zero value, $a=49$ and $a=1$. The value of $a=49$ is $0.4$ and the value of $a=1$ is 
+\[
+	0.4 (0 + V(52)) + 0.6 (0 + V(50)) = 0.6 \cdot 0.4 = 0.24.
+\]
+Thus, $a=49$ is the maximising action and $V(51)$ will be set to $0.4$. Similarly, $V(s)$ will be set to $0.4$ during the first sweep for all $s=52, 53, \dots, 74$.
+\\ \\
+Now consider $s=75$. From here the gambler can reach 100 and, failing that, fall back to 50, which also has non-zero value. The maximising action is $a=25$ with value 
+\[
+	0.4 \cdot  V(100) + 0.6 \cdot  V(50) = 0.4 \cdot 1 + 0.6 \cdot 0.4 = 0.64.
+\]
+The same is true for $s=76, 77, \dots, 87$.
+\\ \\
+Now consider $s=88$. From here the gambler can reach 100 and, failing that, fall back to 76, whose value is greater than 50. The maximising action is $a=12$ with value 
+\[
+0.4 \cdot  V(100) + 0.6 \cdot  V(76) = 0.4 \cdot 1 + 0.6 \cdot 0.64 = 0.784.
+\]
+The same is true for $s=89, 90, \dots, 93$.
+\\ \\
+Now we start to see a pattern emerging. In the long run we imagine that the gambler learns to use these intermediate values where we see peaks in the policy graph (13, 25, 38, 50, 63, 75, 88) as \emph{stepping stones} (looking forward) and \emph{safety nets} (looking back), with the goal of ultimately reaching \$100. 
+
+
+
+
+%For capitals of $s=52, \dots, 99$, betting $s - 50$ is again preferable to betting $s$, but perhaps we can do better. Suppose that the gambler's capital is $63$. Here he could bet  
+%
+%We could argue similarly for capitals of 52 to 99
+%
+%We can argue similarly for capitals of $52, 53, \dots, 62$.
+%
+%Now when he has capital of $63$, if he bets 
+
 
 \section{Exercise 4.9}
 
@@ -229,6 +259,13 @@ For $p_h = 0.25$, the policy changes for different values of $\theta$ as $\theta
 
 
 \section{Exercise 4.10}
+
+\textbf{What is the analog of the value iteration update (4.10) for action values, $q_{k+1}(s, a)$?}
+\\ \\
+The update is
+\begin{align*}
+	q_{k+1}(s, a) = \sum_{s', r} p(s', r | s, a) \Big [r + \gamma \max_{a'} q_{k}(s', a') \Big].
+\end{align*}
 
 
 \end{document}
