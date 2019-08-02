@@ -104,6 +104,19 @@ It is
 \]
 where $\mathcal{T}(s, a)$ denotes the set of all time steps in which action $a$ is taken in state $s$.
 
+\section{Exercise 5.7}
+
+\textbf{In learning curves such as those shown in Figure 5.3 error generally decreases with training, as indeed happened for the ordinary importance-sampling method. But for the weighted importance-sampling method error first increased and then decreased. Why do you think this happened?}
+\\ \\
+As mentioned in the chapter, given a single observed return the numerator and denominator of the weighted-average estimate cancel so that the estimate is equal to the observed return, whose expectation is $v_b(s)$ rather than $v_\pi(s)$. The results in Figure 5.3 were averaged over 100 runs. However, the state is not necessarily visited on every episode and, in fact, it will not be visited during the majority of episodes. Suppose that the state is visited $n$ times during the first episode over 100 runs, where $n$ is almost certainly significantly smaller than 100. As the initial estimate of the state's value is 0, in $n$ out of 100 runs the estimate of the state's value will remain 0 after a single episode, thus pulling the average over all runs towards 0. The mean square error over 100 runs will therefore be pulled towards the square of the true value of the state, that is, $-0.27726^2 = 0.07687$.
+\\ \\
+Now after two episodes it is more likely that the state has been visited at least once, however, it is unlikely that the state has been visited during both episodes. Therefore, over 100 runs, after two episodes we will have less estimates of 0 and more biased estimates with expectation $v_b(s)$. Hence why the mean square error increases. Similarly, after three episodes we will have even more biased estimates with expectation $v_b(s)$ and it is still unlikely that the state will we visited more than once during the first three episodes in any single run. And so on. 
+\\ \\
+However, after a certain number of episodes $m$, which appears to be around eight or nine in this example, the state will begin to be visited more than once during the first $m$ episodes of each run. As a result the bias and hence also the mean square error will begin to decrease. As mentioned in the chapter, the bias converges asymptotically to zero, as does the square error in this example. 
+
+
+
+
 
 
 \end{document}
