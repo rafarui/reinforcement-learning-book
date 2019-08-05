@@ -80,7 +80,7 @@ The only way that the player can have the same sum more than once in a single ep
 
 \textbf{The pseudocode for Monte Carlo ES is inefficient because, for each state–action pair, it maintains a list of all returns and repeatedly calculates their mean. It would be more efficient to use techniques similar to those explained in Section 2.4 to maintain just the mean and a count (for each state–action pair) and update them incrementally. Describe how the pseudocode would be altered to achieve this.}
 \\ \\
-We would initialise $N(s, a) \gets 0$ for all $s \in \mathcal{S}, a \in \mathcal{A}(s)$, and then on each first visit to the pair $S_t, A_t$ we would increment $N(S_t, A_t)$ by 1 and update $Q(S_t, A_t)$ as follows:
+We would initialise $N(s, a) \gets 0$ for all $s \in \mathcal{S}, a \in \mathcal{A}(s)$ and then, given that $S_t, A_t$ is the first visit to some state-action pair in some episode, we would increment $N(S_t, A_t)$ by 1 and update $Q(S_t, A_t)$ as follows:
 \[
 	Q(S_t, A_t) \gets Q(S_t, A_t) + \frac{1}{N(S_t, A_t)} \Big[G - Q(S_t, A_t)\Big].
 \]
@@ -114,9 +114,69 @@ Now after two episodes it is more likely that the state has been visited at leas
 \\ \\
 However, after a certain number of episodes $m$, which appears to be around eight or nine in this example, the state will begin to be visited more than once during the first $m$ episodes of each run. As a result the bias and hence also the mean square error will begin to decrease. As mentioned in the chapter, the bias converges asymptotically to zero, as does the square error in this example. 
 
+\section{Exercise 5.8}
+
+\textbf{The results with Example 5.5 and shown in Figure 5.4 used a first-visit MC method. Suppose that instead an every-visit MC method was used on the same problem. Would the variance of the estimator still be infinite? Why or why not?}
+\\ \\
+For the every-visit MC method the mean of the square of the importance-sampling ratio in an episode of length $n$ is
+\begin{align*}
+	\frac{1}{n} \Bigg( \frac{1}{0.5^2} + \frac{1}{0.5^4} + \frac{1}{0.5^6} + \dots + \frac{1}{0.5^{2n}} \Bigg) 
+	= \frac{2^2}{n} \Big( 1 + 2^2 + 2^4 + \dots + 2^{2n-2} \Big) 
+\end{align*}
+So the expected value of the square of the importance-sampling ratio is 
+\begin{align*}
+& \frac{1}{2} \cdot 0.1 \cdot 2^2 \\
+& + \frac{1}{2} \cdot 0.9 \cdot \frac{1}{2} \cdot 0.1 \cdot \frac{2^2}{2} \Big( 1 + 2^2 \Big) \\
+& + \frac{1}{2} \cdot 0.9 \cdot \frac{1}{2} \cdot 0.9 \cdot \frac{1}{2} \cdot 0.1 \cdot \frac{2^2}{3} \Big( 1 + 2^2 + 2^4 \Big) \\
+& + \frac{1}{2} \cdot 0.9 + \frac{1}{2} \cdot 0.9 \cdot \frac{1}{2} \cdot 0.9 \cdot \frac{1}{2} \cdot 0.1 \cdot \frac{2^2}{4} \Big( 1 + 2^2 + 2^4 + 2^6 \Big) + \dots \\
+= & 0.1 \sum_{k=0}^{\infty} \frac{0.9^k}{2^k} \frac{2}{k+1} \Big( 1 + 2^2 + 2^4 + \dots + 2^{2k}  \Big) \\
+= & 0.2 \sum_{k=0}^{\infty} \frac{0.45^k}{k+1} \Big( 1 + 2^2 + 2^4 + \dots + 2^{2k}  \Big) \\
+> &  0.2 \sum_{k=0}^{\infty} \frac{0.45^k \cdot 2^{2k}}{k+1} \\ 
+= &  0.2 \sum_{k=0}^{\infty} \frac{1.8^k}{k+1} . 
+\end{align*}
+Now for $k \geq 8$, 
+\begin{align*}
+	& 1.8^k > (k+1)^2 \\
+	\iff & \frac{1.8^k}{k+1} > k+1
+\end{align*}
+Hence, the above sum, and therefore the variance of the estimator, is infinite. 
+
+\section{Exercise 5.9}
+
+\textbf{Modify the algorithm for first-visit MC policy evaluation (Section 5.1) to use the incremental implementation for sample averages described in Section 2.4.}
+\\ \\
+We would initialise $N(s) \gets 0$ for all $s \in \mathcal{S}$ and then, given the $S_t$ is the first visit to some state in some episode, we would increment $N(S_t)$ by 1 and update $V(S_t)$ as follows:
+\[
+V(S_t) \gets V(S_t) + \frac{1}{N(S_t)} \Big[G - V(S_t)\Big].
+\]
+
+\section{Exercise 5.10}
+
+\textbf{Derive the weighted-average update rule (5.8) from (5.7). Follow the pattern of the derivation of the unweighted rule (2.3).}
+\\ \\
+We have
+\begin{align*}
+	V_{n + 1} & = \frac{\sum_{k=1}^{n}W_k G_k}{\sum_{k=1}^{n}W_k} \\
+			  & = \frac{1}{\sum_{k=1}^{n}W_k} \Bigg( W_n G_n + \sum_{k=1}^{n-1}W_k G_k \Bigg) \\
+			  & = \frac{1}{\sum_{k=1}^{n}W_k} \Bigg( W_n G_n + \sum_{k=1}^{n-1}W_k \frac{\sum_{k=1}^{n-1}W_k G_k}{\sum_{k=1}^{n-1}W_k} \Bigg) \\
+			  & = \frac{1}{\sum_{k=1}^{n}W_k} \Bigg( W_n G_n + V_n \sum_{k=1}^{n-1}W_k \Bigg) \\
+			  & = \frac{1}{\sum_{k=1}^{n}W_k} \Bigg( W_n G_n + V_n \Bigg( \sum_{k=1}^{n}W_k - W_n \Bigg) \Bigg) \\
+			  & = \frac{1}{\sum_{k=1}^{n}W_k} \Bigg( W_n G_n + V_n \sum_{k=1}^{n}W_k - V_n W_n \Bigg) \\
+			  & = V_n + \frac{W_n}{\sum_{k=1}^{n}W_k} \Big[G_n - V_n\Big] \\
+			  & = V_n + \frac{W_n}{C_n} \Big[G_n - V_n\Big]
+\end{align*}
+where $C_n = \sum_{k=1}^{n}W_k$.
+
+\section{Exercise 5.11}
+
+\textbf{In the boxed algorithm for off-policy MC control, you may have been expecting the $W$ update to have involved the importance-sampling ratio $\frac{\pi(A_t | S_t)}{b(A_t | S_t)}$, but instead it involves $\frac{1}{b(A_t | S_t)}$. Why is this nevertheless correct?}
+\\ \\
+Because $\pi$ is a deterministic greedy policy, it always chooses the current best action. On the third last line of the algorithm $\pi(S_t)$ is set to the current best action and on the second last line we exit the inner loop if $A_t \neq \pi(S_t)$. Therefore, the $W$ update on the last line is only executed if $A_t = \pi(S_t)$, in which case $\pi(A_t | S_t) = 1$.
 
 
+\section{Exercise 5.13}
 
-
+\textbf{Show the steps to derive (5.14) from (5.12).}
+\\ \\
 
 \end{document}
